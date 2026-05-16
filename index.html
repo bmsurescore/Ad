@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --surface: #0e1420;
+    --surface2: #141d2e;
+    --surface3: #1a2540;
+    --border: rgba(255,255,255,0.06);
+    --border-hover: rgba(255,255,255,0.12);
+    --green: #00e676;
+    --green-dim: rgba(0,230,118,0.12);
+    --green-glow: rgba(0,230,118,0.25);
+    --red: #ff4444;
+    --red-dim: rgba(255,68,68,0.12);
+    --gold: #ffc400;
+    --gold-dim: rgba(255,196,0,0.12);
+    --blue: #448aff;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --radius: 14px;
+    --radius-sm: 9px;
+    --font: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #app { position: relative; z-index: 1; }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,12,20,0.85);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-brand { display: flex; align-items: center; gap: 10px; }
+
+  .brand-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .brand-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+  #userBadge {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    background: var(--surface2);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    display: none;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: #080c14;
+    box-shadow: 0 0 20px var(--green-glow);
+  }
+
+  .btn-primary:hover { background: #33ff8a; transform: translateY(-1px); box-shadow: 0 0 28px var(--green-glow); }
+
+  .btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,68,68,0.25); }
+  .btn-danger:hover { background: rgba(255,68,68,0.2); transform: translateY(-1px); }
+
+  .btn-ghost { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--surface3); border-color: var(--border-hover); transform: translateY(-1px); }
+
+  .btn-sm { padding: 7px 13px; font-size: 12px; }
+  .btn-full { width: 100%; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  #loginModal {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 80px rgba(0,230,118,0.04);
+  }
+
+  .login-icon {
+    width: 52px; height: 52px;
+    background: var(--green-dim);
+    border: 1px solid rgba(0,230,118,0.3);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .login-card h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .login-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
+
+  #loginMsg { font-size: 13px; min-height: 18px; margin-top: 12px; color: var(--red); }
+
+  .field { margin-bottom: 14px; }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: rgba(0,230,118,0.4);
+    box-shadow: 0 0 0 3px rgba(0,230,118,0.08);
+  }
+
+  input::placeholder { color: var(--text-muted); }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 20px 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent, var(--green));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .stat-card:hover::before { opacity: 1; }
+
+  .stat-card.green { --accent: var(--green); }
+  .stat-card.gold { --accent: var(--gold); }
+  .stat-card.blue { --accent: var(--blue); }
+
+  .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    font-family: var(--mono);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-card.green .stat-value { color: var(--green); }
+  .stat-card.gold .stat-value { color: var(--gold); }
+  .stat-card.blue .stat-value { color: var(--blue); }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .nav {
+    display: flex;
+    gap: 4px;
+    padding: 0 24px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-btn {
+    padding: 9px 18px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .nav-btn:hover { color: var(--text); background: var(--surface2); }
+  .nav-btn.active { background: var(--green-dim); color: var(--green); border-color: rgba(0,230,118,0.25); }
+
+  .section { padding: 24px; }
+  .hidden { display: none !important; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title span { font-size: 15px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 18px; color: var(--text); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .match-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+
+  .match-item:hover { border-color: var(--border-hover); }
+
+  .match-item-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .match-name { font-size: 15px; font-weight: 700; color: var(--text); }
+
+  .match-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .badge-vip { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(255,196,0,0.25); }
+  .badge-free { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,230,118,0.25); }
+
+  .match-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+
+  .meta-chip {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    background: var(--surface3);
+    padding: 3px 9px;
+    border-radius: 6px;
+  }
+
+  .meta-chip.highlight { color: var(--green); }
+
+  .match-actions { display: flex; gap: 8px; }
+
+  .history-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .history-toggle:hover { border-color: var(--border-hover); }
+  .history-toggle h3 { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .toggle-icon { font-size: 12px; color: var(--text-muted); transition: transform 0.2s; }
+  .toggle-icon.open { transform: rotate(180deg); }
+
+  .user-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .user-avatar {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--surface3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .user-info { flex: 1; min-width: 0; }
+  .user-email { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 3px; }
+  .user-uid { font-size: 11px; font-family: var(--mono); color: var(--text-muted); }
+  .user-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .vip-code-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+
+  .code-value { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--gold); flex: 1; }
+  .code-meta { font-size: 12px; color: var(--text-muted); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  .feedback { font-size: 13px; min-height: 18px; padding-top: 8px; }
+  .feedback.success { color: var(--green); }
+  .feedback.error { color: var(--red); }
+
+  .loader {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-row {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-muted);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
+  .empty-icon { font-size: 32px; margin-bottom: 10px; }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.15s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    animation: slideUp 0.2s ease;
+  }
+
+  @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .modal-icon { font-size: 36px; margin-bottom: 16px; }
+  .modal-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .modal-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-actions .btn { flex: 1; }
+
+  #logoutBtn { display: none; }
+
+  .search-wrap { display: flex; gap: 10px; margin-bottom: 16px; }
+  .search-wrap input { margin-bottom: 0; }
+
+  .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+  .status-dot.active { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .status-dot.inactive { background: var(--text-muted); }
+
+  @media (max-width: 680px) {
+    .stats-grid { grid-template-columns: repeat(3,1fr); }
+    .form-row { grid-template-columns: 1fr; }
+    .stat-value { font-size: 24px; }
+    .topbar { padding: 12px 16px; }
+    .section { padding: 16px; }
+    .user-item { flex-direction: column; align-items: flex-start; }
+    .user-actions { width: 100%; }
+    .user-actions .btn { flex: 1; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- LOGIN -->
+<div id="loginModal">
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Sign in to manage your platform</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="adminEmail" placeholder="admin@example.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="adminPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="login()" id="loginBtn">Sign In</button>
+    <div id="loginMsg" class="feedback error"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp" class="hidden">
+
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-dot"></div>
+      <span class="brand-name">Admin Panel</span>
+    </div>
+    <div class="topbar-right">
+      <div id="userBadge"></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm" onclick="showLogoutModal()">Logout</button>
+    </div>
+  </div>
+
+  <div class="stats-grid" id="statsBox">
+    <div class="stat-card green" onclick="showAllUsers()" title="Click to view all users">
+      <div class="stat-value" id="totalUsers">—</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-card gold" onclick="showVipUsers()" title="Click to view VIP users">
+      <div class="stat-value" id="vipUsers">—</div>
+      <div class="stat-label">VIP Users</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-value" id="todayMatchesStat">—</div>
+      <div class="stat-label">Matches</div>
+    </div>
+  </div>
+
+  <div class="nav" id="navBar">
+    <button class="nav-btn active" onclick="showTab('today')" id="btnToday">📅 Today</button>
+    <button class="nav-btn" onclick="showTab('history')" id="btnHistory">📊 History</button>
+    <button class="nav-btn" onclick="showTab('vip')" id="btnVip">💎 VIP</button>
+  </div>
+
+  <!-- TODAY SECTION -->
+  <div id="todaySection" class="section hidden">
+    <div class="card">
+      <h3>➕ Add / Edit Match</h3>
+      <div class="form-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="date">
+        </div>
+        <div class="field">
+          <label>Time</label>
+          <input type="time" id="time">
+        </div>
+      </div>
+      <div class="field">
+        <label>Match</label>
+        <input type="text" id="match" placeholder="Arsenal vs Chelsea">
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Tip</label>
+          <input type="text" id="tip" placeholder="Over 2.5">
+        </div>
+        <div class="field">
+          <label>Odd</label>
+          <input type="text" id="odd" placeholder="1.85">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>FT Result</label>
+          <input type="text" id="ft" placeholder="2-1 or ???">
+        </div>
+        <div class="field">
+          <label>Total Corners</label>
+          <input type="number" id="corners" placeholder="10">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Tip Type</label>
+          <select id="tipType">
+            <option value="goals">⚽ Goals</option>
+            <option value="corners">🚩 Corners</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Access</label>
+          <select id="type">
+            <option value="vip">💎 VIP</option>
+            <option value="free">🆓 Free</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" id="saveBtn" onclick="saveMatch()">Save Match</button>
+      <button class="btn btn-ghost btn-sm" id="cancelEditBtn" onclick="cancelEdit()" style="display:none;margin-top:8px;width:100%">✕ Cancel Edit</button>
+      <div id="msg" class="feedback"></div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title"><span>🆓</span> Free Matches</div>
+    </div>
+    <div id="freeList"></div>
+
+    <div class="section-header" style="margin-top:20px;">
+      <div class="section-title"><span>💎</span> VIP Matches</div>
+    </div>
+    <div id="vipMatchList"></div>
+
+    <div class="section-header" style="margin-top:20px;">
+      <div class="section-title"><span>⏭</span> Upcoming</div>
+    </div>
+    <div id="upcomingList"></div>
+  </div>
+
+  <!-- HISTORY SECTION -->
+  <div id="historySection" class="section hidden">
+    <div class="history-toggle" onclick="toggleHistory('free', this)">
+      <h3>🆓 Free History</h3>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div id="freeHistory" class="hidden"></div>
+
+    <div class="history-toggle" style="margin-top:12px;" onclick="toggleHistory('vip', this)">
+      <h3>💎 VIP History</h3>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div id="vipHistory" class="hidden"></div>
+  </div>
+
+  <!-- VIP SECTION -->
+  <div id="vipSection" class="section hidden">
+
+    <!-- Search -->
+    <div class="card">
+      <h3>🔎 Search Users</h3>
+      <div class="search-wrap">
+        <input type="text" id="searchUser" placeholder="UID or Email..." onkeydown="if(event.key==='Enter')searchUsers()">
+        <button class="btn btn-ghost" onclick="searchUsers()">Search</button>
+      </div>
+      <div id="userResults"></div>
+    </div>
+
+    <!-- Activate VIP - NO VIP Code section anymore -->
+    <div class="card">
+      <h3>👑 Activate User VIP</h3>
+      <div class="field">
+        <label>User UID</label>
+        <input type="text" id="userUid" placeholder="User UID">
+      </div>
+      <div class="field">
+        <label>User Email (optional)</label>
+        <input type="email" id="userEmail" placeholder="user@email.com">
+      </div>
+      <div class="field">
+        <label>VIP Expiry Date</label>
+        <input type="date" id="userExpiry">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="activateVipUser()">Activate VIP</button>
+      <div id="vipUserMsg" class="feedback"></div>
+    </div>
+
+    <!-- VIP Codes List (view only) -->
+    <div class="section-header">
+      <div class="section-title"><span>💎</span> Active VIP Codes</div>
+    </div>
+    <div id="vipList"></div>
+  </div>
+
+  <!-- USERS BOX -->
+  <div id="usersBox" class="section hidden">
+    <div class="card">
+      <div class="section-header">
+        <h3 id="usersTitle">Users</h3>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('usersBox').classList.add('hidden')">✕ Close</button>
+      </div>
+      <div id="allUsersList"></div>
+    </div>
+  </div>
+
+</div><!-- /mainApp -->
+
+<!-- LOGOUT MODAL -->
+<div id="logoutModal" class="overlay hidden" onclick="closeLogoutModal(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-icon">👋</div>
+    <h3>Sign Out?</h3>
+    <p>Are you sure you want to log out of the admin panel?</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeLogoutModalDirect()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmLogout()">Yes, Logout</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import {
+  getFirestore,
+  collection, addDoc, getDocs,
+  doc, updateDoc, deleteDoc, getDoc, setDoc
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDbfaPPAFdOSJm09OxQeMqQ-UsLkQzsdxk",
+  authDomain: "vip-app-b82d3.firebaseapp.com",
+  projectId: "vip-app-b82d3"
+});
+
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ✅ Set persistence to LOCAL so session survives page refresh/reopen
+setPersistence(auth, browserLocalPersistence).catch(console.error);
+
+const ADMINS = ["admin@gmail.com", "boniphacemaiko46@gmail.com"];
+
+let editId = null;
+
+/* ─── DATE HELPERS ─── */
+function parseDate(dateStr) {
+  if (!dateStr) return null;
+  if (dateStr.includes(".")) {
+    const [d, m, y] = dateStr.split(".");
+    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+  if (dateStr.includes("-")) {
+    const p = dateStr.split("-");
+    if (p[0].length === 4) return dateStr;
+    if (p[2].length === 2) return `20${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+    return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+  }
+  return null;
+}
+
+function setFeedback(el, msg, type = "success") {
+  el.innerText = msg;
+  el.className = `feedback ${type}`;
+  if (msg) setTimeout(() => { el.innerText = ""; }, 4000);
+}
+
+/* ─── LOGIN ─── */
+window.login = async function () {
+  const emailEl = document.getElementById("adminEmail");
+  const passEl = document.getElementById("adminPassword");
+  const msgEl = document.getElementById("loginMsg");
+  const btn = document.getElementById("loginBtn");
+
+  if (!emailEl.value || !passEl.value) {
+    setFeedback(msgEl, "Enter email and password", "error");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span> Signing in…';
+
+  try {
+    await signInWithEmailAndPassword(auth, emailEl.value.trim(), passEl.value);
+  } catch (e) {
+    const map = {
+      "auth/invalid-credential": "Invalid email or password",
+      "auth/user-not-found": "User not found",
+      "auth/wrong-password": "Incorrect password",
+      "auth/too-many-requests": "Too many attempts. Try later",
+    };
+    setFeedback(msgEl, map[e.code] || e.message, "error");
+    btn.disabled = false;
+    btn.innerHTML = "Sign In";
+  }
+};
+
+/* ─── AUTH STATE ─── */
+onAuthStateChanged(auth, async user => {
+  if (user && ADMINS.includes(user.email)) {
+    document.getElementById("loginModal").classList.add("hidden");
+    document.getElementById("mainApp").classList.remove("hidden");
+    document.getElementById("logoutBtn").style.display = "flex";
+    document.getElementById("userBadge").style.display = "block";
+    document.getElementById("userBadge").innerText = user.email;
+
+    showTab("today");
+    await Promise.all([loadToday(), loadHistory(), loadVip(), loadStats()]);
+
+  } else if (user) {
+    await signOut(auth);
+    setFeedback(document.getElementById("loginMsg"), "Access denied ❌", "error");
+  } else {
+    document.getElementById("loginModal").classList.remove("hidden");
+    document.getElementById("mainApp").classList.add("hidden");
+    document.getElementById("logoutBtn").style.display = "none";
+    document.getElementById("userBadge").style.display = "none";
+  }
+});
+
+/* ─── TABS ─── */
+window.showTab = function (tab) {
+  ["today", "history", "vip"].forEach(t => {
+    document.getElementById(t + "Section").classList.add("hidden");
+    document.getElementById("btn" + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove("active");
+  });
+  document.getElementById(tab + "Section").classList.remove("hidden");
+  document.getElementById("btn" + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("active");
+  document.getElementById("usersBox").classList.add("hidden");
+};
+
+/* ─── SAVE MATCH ─── */
+window.saveMatch = async function () {
+  const btn = document.getElementById("saveBtn");
+  const msgEl = document.getElementById("msg");
+  const dateVal = document.getElementById("date").value;
+  const timeVal = document.getElementById("time").value;
+  const matchVal = document.getElementById("match").value.trim();
+  const tipVal = document.getElementById("tip").value.trim();
+  const oddVal = document.getElementById("odd").value.trim();
+  const ftVal = document.getElementById("ft").value.trim();
+
+  if (!dateVal || !timeVal || !matchVal || !tipVal || !oddVal || !ftVal) {
+    setFeedback(msgEl, "⚠ Please fill all required fields", "error");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span> Saving…';
+
+  const [y, m, d] = dateVal.split("-");
+  const formatted = `${d}.${m}.${y}`;
+
+  const data = {
+    date: formatted,
+    time: timeVal,
+    match: matchVal,
+    tip: tipVal,
+    odd: oddVal,
+    ft: ftVal,
+    corners: document.getElementById("corners").value ? Number(document.getElementById("corners").value) : null,
+    type: document.getElementById("type").value,
+    tipType: document.getElementById("tipType").value,
+    updatedAt: new Date().toISOString()
+  };
+
+  try {
+    if (editId) {
+      await updateDoc(doc(db, "matches", editId), data);
+      setFeedback(msgEl, "✔ Match updated!", "success");
+      editId = null;
+    } else {
+      data.createdAt = new Date().toISOString();
+      await addDoc(collection(db, "matches"), data);
+      setFeedback(msgEl, "✔ Match saved!", "success");
+    }
+    clearInputs();
+    await Promise.all([loadToday(), loadHistory(), loadStats()]);
+  } catch (e) {
+    setFeedback(msgEl, e.message, "error");
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "Save Match";
+};
+
+window.cancelEdit = function () {
+  editId = null;
+  clearInputs();
+  document.getElementById("saveBtn").innerHTML = "Save Match";
+  document.getElementById("cancelEditBtn").style.display = "none";
+  document.getElementById("msg").innerText = "";
+};
+
+/* ─── LOAD TODAY ─── */
+async function loadToday() {
+  const freeList = document.getElementById("freeList");
+  const vipMatchList = document.getElementById("vipMatchList");
+  const upcomingList = document.getElementById("upcomingList");
+
+  freeList.innerHTML = upcomingList.innerHTML = vipMatchList.innerHTML = '<div class="loading-row"><span class="loader"></span> Loading…</div>';
+
+  const snap = await getDocs(collection(db, "matches"));
+
+  const start = new Date(); start.setHours(0, 0, 0, 0);
+  const end = new Date(); end.setHours(23, 59, 59, 999);
+
+  let todayMatches = [], upcomingMatches = [];
+
+  snap.forEach(docSnap => {
+    const m = { id: docSnap.id, ...docSnap.data() };
+    if (!m.date) return;
+    const iso = parseDate(m.date);
+    if (!iso) return;
+    const dt = new Date(iso + "T" + (m.time || "00:00") + ":00");
+    if (isNaN(dt)) return;
+
+    if (dt >= start && dt <= end) todayMatches.push({ ...m, matchTime: dt });
+    else if (dt > end) upcomingMatches.push({ ...m, matchTime: dt });
+  });
+
+  todayMatches.sort((a, b) => a.matchTime - b.matchTime);
+  upcomingMatches.sort((a, b) => a.matchTime - b.matchTime);
+
+  freeList.innerHTML = "";
+  vipMatchList.innerHTML = "";
+  upcomingList.innerHTML = "";
+
+  const renderMatch = (m, container) => {
+    const div = document.createElement("div");
+    div.className = "match-item";
+    div.innerHTML = `
+      <div class="match-item-header">
+        <div class="match-name">${m.match}</div>
+        <span class="match-badge ${m.type === 'vip' ? 'badge-vip' : 'badge-free'}">${m.type === 'vip' ? '💎 VIP' : '🆓 FREE'}</span>
+      </div>
+      <div class="match-meta">
+        <span class="meta-chip">🕒 ${m.time || '--:--'}</span>
+        <span class="meta-chip">${m.tipType === 'corners' ? '🚩' : '⚽'} ${m.tip}</span>
+        <span class="meta-chip highlight">@ ${m.odd}</span>
+        <span class="meta-chip">FT: ${m.ft}</span>
+        ${m.tipType === 'corners' && m.corners ? `<span class="meta-chip">Corners: ${m.corners}</span>` : ''}
+      </div>
+      <div class="match-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editMatch('${m.id}')">✏ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMatch('${m.id}')">🗑 Delete</button>
+      </div>`;
+    container.appendChild(div);
+  };
+
+  if (todayMatches.filter(m => m.type === "free").length === 0)
+    freeList.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No free matches today</div>';
+  if (todayMatches.filter(m => m.type === "vip").length === 0)
+    vipMatchList.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No VIP matches today</div>';
+  if (upcomingMatches.length === 0)
+    upcomingList.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No upcoming matches</div>';
+
+  todayMatches.forEach(m => {
+    if (m.type === "free") renderMatch(m, freeList);
+    else renderMatch(m, vipMatchList);
+  });
+
+  upcomingMatches.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "match-item";
+    div.innerHTML = `
+      <div class="match-item-header">
+        <div class="match-name">${m.match}</div>
+        <span class="match-badge ${m.type === 'vip' ? 'badge-vip' : 'badge-free'}">${m.type === 'vip' ? '💎 VIP' : '🆓 FREE'}</span>
+      </div>
+      <div class="match-meta">
+        <span class="meta-chip">📅 ${m.date}</span>
+        <span class="meta-chip">🕒 ${m.time || '--:--'}</span>
+        <span class="meta-chip">${m.tipType === 'corners' ? '🚩' : '⚽'} ${m.tip}</span>
+        <span class="meta-chip highlight">@ ${m.odd}</span>
+      </div>
+      <div class="match-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editMatch('${m.id}')">✏ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMatch('${m.id}')">🗑 Delete</button>
+      </div>`;
+    upcomingList.appendChild(div);
+  });
+}
+
+/* ─── LOAD HISTORY ─── */
+async function loadHistory() {
+  const freeHistory = document.getElementById("freeHistory");
+  const vipHistory = document.getElementById("vipHistory");
+
+  const snap = await getDocs(collection(db, "matches"));
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+
+  let matches = [];
+
+  snap.forEach(docSnap => {
+    const m = { id: docSnap.id, ...docSnap.data() };
+    if (!m.date) return;
+    const iso = parseDate(m.date);
+    if (!iso) return;
+    const dt = new Date(iso + "T" + (m.time || "00:00") + ":00");
+    if (isNaN(dt) || dt >= today) return;
+    matches.push({ ...m, matchDateTime: dt });
+  });
+
+  matches.sort((a, b) => b.matchDateTime - a.matchDateTime);
+
+  const buildItem = m => `
+    <div class="match-item">
+      <div class="match-item-header">
+        <div class="match-name">${m.match}</div>
+        <span class="match-badge ${m.type === 'vip' ? 'badge-vip' : 'badge-free'}">${m.type === 'vip' ? '💎 VIP' : '🆓 FREE'}</span>
+      </div>
+      <div class="match-meta">
+        <span class="meta-chip">📅 ${m.date}</span>
+        <span class="meta-chip">🕒 ${m.time || '--:--'}</span>
+        <span class="meta-chip">${m.tipType === 'corners' ? '🚩' : '⚽'} ${m.tip}</span>
+        <span class="meta-chip highlight">@ ${m.odd}</span>
+        <span class="meta-chip">FT: ${m.ft}</span>
+        ${m.tipType === 'corners' && m.corners ? `<span class="meta-chip">Corners: ${m.corners}</span>` : ''}
+      </div>
+      <div class="match-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editMatch('${m.id}')">✏ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMatch('${m.id}')">🗑 Delete</button>
+      </div>
+    </div>`;
+
+  const free = matches.filter(m => m.type === "free");
+  const vip = matches.filter(m => m.type === "vip");
+
+  freeHistory.innerHTML = free.length ? free.map(buildItem).join("") : '<div class="empty"><div class="empty-icon">📭</div>No free history</div>';
+  vipHistory.innerHTML = vip.length ? vip.map(buildItem).join("") : '<div class="empty"><div class="empty-icon">📭</div>No VIP history</div>';
+}
+
+window.toggleHistory = function (type, el) {
+  const panel = document.getElementById(type + "History");
+  const icon = el.querySelector(".toggle-icon");
+  panel.classList.toggle("hidden");
+  icon.classList.toggle("open");
+};
+
+/* ─── EDIT / DELETE MATCH ─── */
+window.editMatch = async function (id) {
+  const snap = await getDoc(doc(db, "matches", id));
+  const d = snap.data();
+  const iso = parseDate(d.date);
+  document.getElementById("date").value = iso || "";
+  document.getElementById("time").value = d.time || "";
+  document.getElementById("match").value = d.match || "";
+  document.getElementById("tip").value = d.tip || "";
+  document.getElementById("odd").value = d.odd || "";
+  document.getElementById("ft").value = d.ft || "";
+  document.getElementById("type").value = d.type || "vip";
+  document.getElementById("tipType").value = d.tipType || "goals";
+  document.getElementById("corners").value = d.corners || "";
+
+  editId = id;
+  document.getElementById("saveBtn").innerHTML = "✔ Update Match";
+  document.getElementById("cancelEditBtn").style.display = "block";
+  document.getElementById("msg").innerText = "";
+  showTab("today");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+window.deleteMatch = async function (id) {
+  if (!confirm("Delete this match? This cannot be undone.")) return;
+  await deleteDoc(doc(db, "matches", id));
+  await Promise.all([loadToday(), loadHistory(), loadStats()]);
+};
+
+function clearInputs() {
+  ["date", "time", "match", "tip", "odd", "ft", "corners"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+  document.getElementById("type").value = "vip";
+  document.getElementById("tipType").value = "goals";
+  document.getElementById("cancelEditBtn").style.display = "none";
+  document.getElementById("saveBtn").innerHTML = "Save Match";
+}
+
+/* ─── VIP CODES (view only) ─── */
+async function loadVip() {
+  const vipList = document.getElementById("vipList");
+  vipList.innerHTML = '<div class="loading-row"><span class="loader"></span> Loading…</div>';
+
+  const snap = await getDocs(collection(db, "vip_codes"));
+
+  if (snap.empty) {
+    vipList.innerHTML = '<div class="empty"><div class="empty-icon">🔑</div>No VIP codes yet</div>';
+    return;
+  }
+
+  vipList.innerHTML = "";
+  snap.forEach(docSnap => {
+    const v = docSnap.data();
+    const id = docSnap.id;
+    const div = document.createElement("div");
+    div.className = "vip-code-item";
+    div.innerHTML = `
+      <div style="flex:1;min-width:0">
+        <div class="code-value">${v.code}</div>
+        <div class="code-meta">
+          <span class="status-dot ${v.active ? 'active' : 'inactive'}"></span>
+          ${v.active ? 'Active' : 'Inactive'} · Expires: ${v.expiry || 'No expiry'}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-ghost btn-sm" onclick="toggleVip('${id}', ${v.active})" title="${v.active ? 'Disable' : 'Enable'}">${v.active ? '⏸' : '▶'}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteVip('${id}')">🗑</button>
+      </div>`;
+    vipList.appendChild(div);
+  });
+}
+
+window.toggleVip = async function (id, current) {
+  await updateDoc(doc(db, "vip_codes", id), { active: !current });
+  await loadVip();
+};
+
+window.deleteVip = async function (id) {
+  if (!confirm("Delete this VIP code?")) return;
+  await deleteDoc(doc(db, "vip_codes", id));
+  await loadVip();
+};
+
+/* ─── ACTIVATE VIP USER ─── */
+window.activateVipUser = async function () {
+  const uid = document.getElementById("userUid").value.trim();
+  const msgEl = document.getElementById("vipUserMsg");
+
+  if (!uid) { setFeedback(msgEl, "⚠ Enter UID", "error"); return; }
+  if (!document.getElementById("userExpiry").value) { setFeedback(msgEl, "⚠ Enter expiry date", "error"); return; }
+
+  try {
+    await setDoc(doc(db, "users", uid), {
+      vip: true,
+      expiry: document.getElementById("userExpiry").value,
+      email: document.getElementById("userEmail").value.trim() || ""
+    }, { merge: true });
+    setFeedback(msgEl, "✅ VIP Activated!", "success");
+    document.getElementById("userUid").value = "";
+    document.getElementById("userEmail").value = "";
+    document.getElementById("userExpiry").value = "";
+    await loadStats();
+  } catch (e) {
+    setFeedback(msgEl, e.message, "error");
+  }
+};
+
+/* ─── STATS ─── */
+async function loadStats() {
+  const [usersSnap, matchesSnap] = await Promise.all([
+    getDocs(collection(db, "users")),
+    getDocs(collection(db, "matches"))
+  ]);
+
+  let total = 0, vip = 0;
+  usersSnap.forEach(d => { total++; if (d.data().vip) vip++; });
+
+  document.getElementById("totalUsers").innerText = total;
+  document.getElementById("vipUsers").innerText = vip;
+  document.getElementById("todayMatchesStat").innerText = matchesSnap.size;
+}
+
+/* ─── SEARCH USERS ─── */
+window.searchUsers = async function () {
+  const text = document.getElementById("searchUser").value.trim().toLowerCase();
+  const resultsEl = document.getElementById("userResults");
+
+  if (!text) { resultsEl.innerHTML = '<div class="empty">Enter a UID or email to search</div>'; return; }
+
+  resultsEl.innerHTML = '<div class="loading-row"><span class="loader"></span> Searching…</div>';
+
+  const snap = await getDocs(collection(db, "users"));
+  const results = [];
+
+  snap.forEach(docSnap => {
+    const u = docSnap.data();
+    if (docSnap.id.toLowerCase().includes(text) || (u.email || "").toLowerCase().includes(text)) {
+      results.push({ id: docSnap.id, ...u });
+    }
+  });
+
+  if (!results.length) {
+    resultsEl.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>No users found</div>';
+    return;
+  }
+
+  resultsEl.innerHTML = results.map(u => `
+    <div class="user-item">
+      <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
+      <div class="user-info">
+        <div class="user-email">${u.email || 'No Email'}</div>
+        <div class="user-uid">${u.id}</div>
+        <div style="margin-top:4px;font-size:12px;color:${u.vip ? 'var(--gold)' : 'var(--text-muted)'}">
+          ${u.vip ? '💎 VIP · Expires ' + (u.expiry || 'N/A') : 'Standard'}
+        </div>
+      </div>
+    </div>`).join("");
+};
+
+/* ─── ALL USERS / VIP USERS ─── */
+function buildUserCard(u, id) {
+  return `
+    <div class="user-item">
+      <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
+      <div class="user-info">
+        <div class="user-email">${u.email || 'No Email'}</div>
+        <div class="user-uid">${id}</div>
+        <div style="margin-top:4px;font-size:12px;color:${u.vip ? 'var(--gold)' : 'var(--text-muted)'}">
+          ${u.vip ? '💎 VIP · Expires ' + (u.expiry || 'N/A') : 'Standard'}
+        </div>
+      </div>
+      <div class="user-actions">
+        ${!u.vip
+          ? `<button class="btn btn-ghost btn-sm" onclick="makeVip('${id}','${(u.email || '').replace(/'/g,"\\'")}')">Make VIP</button>`
+          : `<button class="btn btn-ghost btn-sm" onclick="removeVip('${id}')">Remove VIP</button>`}
+        <button class="btn btn-danger btn-sm" onclick="deleteUser('${id}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+window.showAllUsers = async function () {
+  document.getElementById("usersTitle").innerText = "All Users";
+  const box = document.getElementById("usersBox");
+  const list = document.getElementById("allUsersList");
+  box.classList.remove("hidden");
+  list.innerHTML = '<div class="loading-row"><span class="loader"></span> Loading…</div>';
+
+  const snap = await getDocs(collection(db, "users"));
+  if (snap.empty) { list.innerHTML = '<div class="empty">No users found</div>'; return; }
+
+  list.innerHTML = "";
+  snap.forEach(d => { list.innerHTML += buildUserCard(d.data(), d.id); });
+  box.scrollIntoView({ behavior: "smooth" });
+};
+
+window.showVipUsers = async function () {
+  document.getElementById("usersTitle").innerText = "VIP Users";
+  const box = document.getElementById("usersBox");
+  const list = document.getElementById("allUsersList");
+  box.classList.remove("hidden");
+  list.innerHTML = '<div class="loading-row"><span class="loader"></span> Loading…</div>';
+
+  const snap = await getDocs(collection(db, "users"));
+  list.innerHTML = "";
+  let count = 0;
+  snap.forEach(d => { if (d.data().vip) { list.innerHTML += buildUserCard(d.data(), d.id); count++; } });
+  if (!count) list.innerHTML = '<div class="empty">No VIP users found</div>';
+  box.scrollIntoView({ behavior: "smooth" });
+};
+
+window.makeVip = function (uid, email) {
+  document.getElementById("userUid").value = uid;
+  document.getElementById("userEmail").value = email;
+  document.getElementById("usersBox").classList.add("hidden");
+  showTab("vip");
+};
+
+window.removeVip = async function (uid) {
+  if (!confirm("Remove VIP from this user?")) return;
+  await updateDoc(doc(db, "users", uid), { vip: false, expiry: null });
+  await loadStats();
+  await showVipUsers();
+};
+
+window.deleteUser = async function (uid) {
+  if (!confirm("Permanently delete this user? This cannot be undone.")) return;
+  await deleteDoc(doc(db, "users", uid));
+  await loadStats();
+  const title = document.getElementById("usersTitle").innerText;
+  title.includes("VIP") ? showVipUsers() : showAllUsers();
+};
+
+/* ─── LOGOUT ─── */
+window.showLogoutModal = function () {
+  document.getElementById("logoutModal").classList.remove("hidden");
+};
+
+window.closeLogoutModal = function (e) {
+  if (e.target === document.getElementById("logoutModal")) {
+    document.getElementById("logoutModal").classList.add("hidden");
+  }
+};
+
+window.closeLogoutModalDirect = function () {
+  document.getElementById("logoutModal").classList.add("hidden");
+};
+
+window.confirmLogout = async function () {
+  await signOut(auth);
+  document.getElementById("logoutModal").classList.add("hidden");
+};
+</script>
+</body>
+</html>
