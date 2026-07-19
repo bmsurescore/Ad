@@ -332,6 +332,9 @@
   .modal-actions .btn { flex: 1; }
   .modal-card.danger-modal { border-color: rgba(255,68,68,0.25); }
   .modal-card.warn-modal   { border-color: rgba(255,145,0,0.25); }
+  #confirmTypeInput {
+    margin-bottom: 16px; text-align: center; letter-spacing: 2px; text-transform: uppercase;
+  }
 
   .history-toggle {
     display: flex; align-items: center; justify-content: space-between;
@@ -392,48 +395,42 @@
   #toastMsg.gold-toast { background: var(--gold); box-shadow: 0 8px 24px rgba(255,196,0,0.3); }
   #toastMsg.red-toast  { background: var(--red); color: white; box-shadow: 0 8px 24px rgba(255,68,68,0.3); }
 
-  /* ── PREDICTION BUILDER ── */
-  .pb-card {
-    background: linear-gradient(135deg, rgba(68,138,255,0.06), rgba(68,138,255,0.015));
-    border: 1px solid rgba(68,138,255,0.22); border-radius: var(--radius);
-    padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden;
+  /* ── VISITOR VIEW TOGGLE + TABLE (new) ── */
+  .view-toggle { display: flex; gap: 6px; }
+  .view-toggle .btn.active { background: var(--surface3); border-color: var(--border-hover); color: var(--text); }
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow-x: auto;
   }
-  .pb-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  table.visitors-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 920px; }
+  table.visitors-table thead th {
+    position: sticky; top: 0; background: var(--surface2);
+    text-align: left; padding: 12px 14px; font-size: 11px; font-weight: 700;
+    letter-spacing: .6px; text-transform: uppercase; color: var(--text-muted);
+    border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none;
   }
-  .pb-card h3 { color: var(--blue); margin-bottom: 4px; }
-  .pb-card > p.pb-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; }
-  .pb-fields { display: flex; flex-direction: column; gap: 12px; margin-bottom: 4px; }
-  .pb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .pb-leg {
-    border: 1px solid var(--border); border-radius: var(--radius-sm);
-    padding: 14px; background: var(--surface2); margin-bottom: 10px;
-  }
-  .pb-leg-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
-  .pb-checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-  .pb-checkbox-row input[type=checkbox] { width: auto; accent-color: var(--blue); }
-  .pb-checkbox-row label { font-size: 12px; color: var(--text-dim); text-transform: none; letter-spacing: 0; font-weight: 500; margin: 0; }
-  .pb-preview-box {
-    background: var(--bg); border: 1px solid rgba(68,138,255,0.35);
-    border-radius: var(--radius-sm); padding: 14px 18px; margin: 14px 0;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  }
-  .pb-preview-val { font-family: var(--mono); font-size: clamp(13px,2.6vw,16px); font-weight: 700; color: var(--blue); flex: 1; word-break: break-word; letter-spacing: .04em; }
-  .pb-quick-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .pb-quick-chip {
-    padding: 7px 13px; border: 1px solid var(--border); border-radius: 20px;
-    background: var(--surface2); color: var(--text-dim); font-size: 11.5px;
-    font-weight: 600; cursor: pointer; transition: all .2s; font-family: var(--mono);
-  }
-  .pb-quick-chip:hover { border-color: rgba(68,138,255,0.4); color: var(--blue); background: rgba(68,138,255,0.08); }
-
-  .footer { text-align:center; }
+  table.visitors-table thead th:hover { color: var(--text); }
+  table.visitors-table thead th .sort-arrow { opacity: .4; margin-left: 4px; font-size: 10px; }
+  table.visitors-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+  table.visitors-table tbody tr:hover { background: var(--surface2); }
+  table.visitors-table tbody tr.row-blocked { background: rgba(255,68,68,0.04); }
+  table.visitors-table tbody tr.row-blocked:hover { background: rgba(255,68,68,0.08); }
+  table.visitors-table td { padding: 12px 14px; vertical-align: middle; white-space: nowrap; }
+  table.visitors-table td.wrap-cell { white-space: normal; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+  .cell-id { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .cell-name { font-weight: 600; font-size: 13px; }
+  .cell-email { font-size: 11px; color: var(--text-muted); font-family: var(--mono); }
+  .cell-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .dot-inline { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .dot-online { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .dot-offline { background: var(--text-muted); }
+  .table-empty { padding: 40px; text-align: center; color: var(--text-muted); font-size: 14px; }
+  .table-toolbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+  .action-cell { display: flex; gap: 6px; flex-wrap: nowrap; }
 
   @media (max-width: 680px) {
     .stats-grid { grid-template-columns: repeat(2,1fr); }
     .form-row   { grid-template-columns: 1fr; }
-    .pb-row     { grid-template-columns: 1fr; }
     .stat-value { font-size: 24px; }
     .topbar, .section { padding: 12px 16px; }
     .user-card-top { flex-direction: column; }
@@ -497,84 +494,14 @@
 
     <!-- TODAY -->
     <div id="todaySection" class="section hidden">
-
-      <!-- ── PREDICTION BUILDER ── -->
-      <div class="pb-card">
-        <h3>🎯 Prediction Builder</h3>
-        <p class="pb-sub">Pick a market and fill in the blanks — the correct tip code is generated for you (matches the site's auto win/lose engine). No syntax to memorize.</p>
-
-        <div class="field" style="margin-bottom:12px;">
-          <label>Market Type</label>
-          <select id="pbMarket" onchange="renderPbFields()">
-            <optgroup label="Match Result">
-              <option value="1">Home Win (1)</option>
-              <option value="X">Draw (X)</option>
-              <option value="2">Away Win (2)</option>
-            </optgroup>
-            <optgroup label="Double Chance / Draw No Bet">
-              <option value="1X">Double Chance — 1X</option>
-              <option value="X2">Double Chance — X2</option>
-              <option value="12">Double Chance — 12</option>
-              <option value="DNB_HOME">Draw No Bet — Home</option>
-              <option value="DNB_AWAY">Draw No Bet — Away</option>
-            </optgroup>
-            <optgroup label="Total Goals">
-              <option value="OVER">Over X.X Goals</option>
-              <option value="UNDER">Under X.X Goals</option>
-              <option value="GOALS_RANGE">Goals Range (e.g. 1–3)</option>
-              <option value="ODD">Odd Number of Goals</option>
-              <option value="EVEN">Even Number of Goals</option>
-            </optgroup>
-            <optgroup label="Team Goals">
-              <option value="TEAM_OVER">Team Over X.X Goals</option>
-              <option value="TEAM_UNDER">Team Under X.X Goals</option>
-              <option value="TEAM_GOALS_RANGE">Team Goals Range</option>
-              <option value="CLEAN_SHEET">Clean Sheet</option>
-              <option value="WIN_TO_NIL">Win to Nil</option>
-            </optgroup>
-            <optgroup label="Both Teams to Score">
-              <option value="BTTS_YES">BTTS — Yes</option>
-              <option value="BTTS_NO">BTTS — No</option>
-            </optgroup>
-            <optgroup label="Handicap">
-              <option value="AH">Asian Handicap</option>
-            </optgroup>
-            <optgroup label="Score / Half">
-              <option value="CORRECT_SCORE">Correct Score</option>
-              <option value="HTFT">HT / FT</option>
-              <option value="WIN_EITHER_HALF">Win Either Half</option>
-              <option value="QUALIFY">To Qualify (agg. / pens.)</option>
-            </optgroup>
-            <optgroup label="Corners">
-              <option value="CORNERS">Corners Over/Under</option>
-            </optgroup>
-            <optgroup label="Combo">
-              <option value="COMBO">Combo Bet (2 legs)</option>
-            </optgroup>
-          </select>
-        </div>
-
-        <div id="pbFieldsWrap" class="pb-fields"></div>
-
-        <div class="pb-preview-box">
-          <div class="pb-preview-val" id="pbPreview">HOME</div>
-          <button class="btn btn-ghost btn-sm" onclick="renderPbFields()">🔄</button>
-        </div>
-
-        <button class="btn btn-primary btn-full" onclick="usePbTip()">➜ Insert Into Tip Field Below</button>
-
-        <div style="margin-top:18px;">
-          <label style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">⚡ Quick Picks</label>
-          <div class="pb-quick-wrap" id="pbQuickPicks"></div>
-        </div>
-      </div>
-
       <div class="card">
         <h3>➕ Add / Edit Match</h3>
         <div class="form-row">
           <div class="field"><label>Date</label><input type="date" id="date"></div>
           <div class="field"><label>Time</label><input type="time" id="time"></div>
         </div>
+        <div class="field"><label>League</label><input type="text" id="league" placeholder="Premier League" list="leagueSuggestions"></div>
+        <datalist id="leagueSuggestions"></datalist>
         <div class="field"><label>Match</label><input type="text" id="match" placeholder="Arsenal vs Chelsea"></div>
         <div class="form-row">
           <div class="field"><label>Tip</label><input type="text" id="tip" placeholder="Over 2.5"></div>
@@ -597,14 +524,6 @@
               <option value="free">🆓 Free</option>
             </select>
           </div>
-        </div>
-        <div class="field">
-          <label>Qualification Winner <span style="text-transform:none;font-weight:400;">(cup ties only, optional)</span></label>
-          <select id="qualified">
-            <option value="">— Not applicable —</option>
-            <option value="HOME">Home team qualifies</option>
-            <option value="AWAY">Away team qualifies</option>
-          </select>
         </div>
         <button class="btn btn-primary btn-full" id="saveBtn" onclick="saveMatch()">Save Match</button>
         <button class="btn btn-ghost btn-sm hidden" id="cancelEditBtn" onclick="cancelEdit()" style="margin-top:8px;width:100%">✕ Cancel Edit</button>
@@ -711,15 +630,53 @@
           <div class="stat-label">Active Today</div>
         </div>
         <div class="stat-card red">
-          <div class="stat-value" id="totalVisitsCount">—</div>
-          <div class="stat-label">Total Visits</div>
+          <div class="stat-value" id="blockedVisitorsCount">—</div>
+          <div class="stat-label">Blocked</div>
         </div>
       </div>
+
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="visitorSearchInput" placeholder="Search by visitor ID, name or email…" oninput="renderVisitorsList()">
+      </div>
+      <div class="filter-tabs">
+        <div class="filter-tab active-all" data-filter="all" onclick="setVisitorFilter('all', this)">👥 All</div>
+        <div class="filter-tab" data-filter="online" onclick="setVisitorFilter('online', this)">🟢 Online</div>
+        <div class="filter-tab" data-filter="vip" onclick="setVisitorFilter('vip', this)">💎 Used VIP</div>
+        <div class="filter-tab" data-filter="blocked" onclick="setVisitorFilter('blocked', this)">🚫 Blocked</div>
+      </div>
+
       <div class="section-header">
         <div class="section-title"><span>📈</span> Visitor Log</div>
-        <button class="btn btn-ghost btn-sm" onclick="loadVisitors()">🔄 Refresh</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <div class="view-toggle">
+            <button class="btn btn-ghost btn-sm active" id="viewCardsBtn" onclick="setVisitorView('cards')">🗂 Cards</button>
+            <button class="btn btn-ghost btn-sm" id="viewTableBtn" onclick="setVisitorView('table')">📋 Table</button>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="exportVisitorsCsv()">⬇ Export CSV</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadVisitors()">🔄 Refresh</button>
+        </div>
       </div>
       <div id="visitorsList"></div>
+      <div id="visitorsTableWrap" class="table-wrap hidden">
+        <table class="visitors-table" id="visitorsTable">
+          <thead>
+            <tr>
+              <th onclick="setVisitorSort('name')">Jina / Email<span class="sort-arrow" id="arrow-name"></span></th>
+              <th onclick="setVisitorSort('id')">Visitor ID<span class="sort-arrow" id="arrow-id"></span></th>
+              <th onclick="setVisitorSort('status')">Status<span class="sort-arrow" id="arrow-status"></span></th>
+              <th onclick="setVisitorSort('visits')">Visits<span class="sort-arrow" id="arrow-visits"></span></th>
+              <th onclick="setVisitorSort('daysActive')">Days Active<span class="sort-arrow" id="arrow-daysActive"></span></th>
+              <th onclick="setVisitorSort('vip')">VIP<span class="sort-arrow" id="arrow-vip"></span></th>
+              <th onclick="setVisitorSort('blocked')">Blocked<span class="sort-arrow" id="arrow-blocked"></span></th>
+              <th onclick="setVisitorSort('firstSeen')">First Seen<span class="sort-arrow" id="arrow-firstSeen"></span></th>
+              <th onclick="setVisitorSort('lastSeen')">Last Seen<span class="sort-arrow" id="arrow-lastSeen"></span></th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="visitorsTableBody"></tbody>
+        </table>
+      </div>
     </div>
 
   </div><!-- /mainApp -->
@@ -730,6 +687,7 @@
       <div class="modal-icon" id="confirmIcon">⚠️</div>
       <h3 id="confirmTitle">Confirm</h3>
       <p id="confirmMsg">Are you sure?</p>
+      <input type="text" id="confirmTypeInput" class="hidden" placeholder='Andika "DELETE" kuthibitisha' oninput="handleConfirmTypeInput()">
       <div class="modal-actions">
         <button class="btn btn-ghost" onclick="closeConfirmModalDirect()">Cancel</button>
         <button class="btn" id="confirmActionBtn" onclick="executeConfirm()">Confirm</button>
@@ -782,6 +740,13 @@ let selectedFormat     = "VIP-XXXX-XXXX";
 let codeQty            = 1;
 let generatedCodes     = [];
 let pendingConfirmAction = null;
+let pendingRequireType   = false;   // when true, "DELETE" must be typed to enable Confirm
+let knownLeagues       = new Set();
+let allVisitors         = [];
+let visitorFilter       = "all";
+let visitorView         = "cards";
+let visitorSortKey      = "lastSeen";
+let visitorSortDir      = "desc";
 
 // ── SERVER TIME SYNC ──────────────────────────────────────────
 let serverOffsetMs = 0;
@@ -851,6 +816,20 @@ function showToast(msg, type = "green") {
   setTimeout(() => { el.style.display = "none"; }, 3000);
 }
 
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+
+function rememberLeague(name) {
+  if (!name) return;
+  const trimmed = name.trim();
+  if (!trimmed || knownLeagues.has(trimmed)) return;
+  knownLeagues.add(trimmed);
+  const opt = document.createElement("option");
+  opt.value = trimmed;
+  document.getElementById("leagueSuggestions").appendChild(opt);
+}
+
 // ── VIP History Sync ──────────────────────────────────────────
 async function writeToVipHistory(matchData, docId) {
   const histRef = doc(db, "matches_vip_history", docId);
@@ -905,7 +884,10 @@ window.syncVipHistory = async function(btn) {
 };
 
 // ── Confirm Modal ─────────────────────────────────────────────
-window.openConfirm = function({ icon, title, msg, btnLabel, btnClass, action, modalClass }) {
+// openConfirm({ icon, title, msg, btnLabel, btnClass, action, modalClass, requireTypeConfirm })
+// requireTypeConfirm: true  -> admin must type "DELETE" before the Confirm button is enabled.
+// Use this for irreversible / high-impact actions (permanent delete).
+window.openConfirm = function({ icon, title, msg, btnLabel, btnClass, action, modalClass, requireTypeConfirm }) {
   document.getElementById("confirmIcon").innerText  = icon || "⚠️";
   document.getElementById("confirmTitle").innerText = title || "Confirm";
   document.getElementById("confirmMsg").innerText   = msg || "Are you sure?";
@@ -913,9 +895,28 @@ window.openConfirm = function({ icon, title, msg, btnLabel, btnClass, action, mo
   btn.innerText  = btnLabel || "Confirm";
   btn.className  = `btn ${btnClass || "btn-danger"}`;
   document.getElementById("confirmModalCard").className = `modal-card ${modalClass || "danger-modal"}`;
+
+  const typeInput = document.getElementById("confirmTypeInput");
+  pendingRequireType = !!requireTypeConfirm;
+  if (pendingRequireType) {
+    typeInput.value = "";
+    typeInput.classList.remove("hidden");
+    btn.disabled = true;
+  } else {
+    typeInput.classList.add("hidden");
+    btn.disabled = false;
+  }
+
   pendingConfirmAction = action;
   document.getElementById("confirmModal").classList.remove("hidden");
+  if (pendingRequireType) setTimeout(() => typeInput.focus(), 50);
 };
+
+window.handleConfirmTypeInput = function() {
+  const val = document.getElementById("confirmTypeInput").value.trim().toUpperCase();
+  document.getElementById("confirmActionBtn").disabled = val !== "DELETE";
+};
+
 window.closeConfirmModal = function(e) {
   if (e.target === document.getElementById("confirmModal"))
     document.getElementById("confirmModal").classList.add("hidden");
@@ -924,9 +925,20 @@ window.closeConfirmModalDirect = function() {
   document.getElementById("confirmModal").classList.add("hidden");
 };
 window.executeConfirm = async function() {
-  document.getElementById("confirmModal").classList.add("hidden");
-  if (pendingConfirmAction) await pendingConfirmAction();
-  pendingConfirmAction = null;
+  const btn = document.getElementById("confirmActionBtn");
+  if (btn.disabled) return; // guards against the "DELETE" gate and double-submits
+  const originalLabel = btn.innerText;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span> Inaendelea…';
+  try {
+    if (pendingConfirmAction) await pendingConfirmAction();
+  } finally {
+    pendingConfirmAction = null;
+    pendingRequireType   = false;
+    document.getElementById("confirmModal").classList.add("hidden");
+    btn.disabled = false;
+    btn.innerText = originalLabel;
+  }
 };
 
 // ── Tab Navigation ────────────────────────────────────────────
@@ -953,8 +965,6 @@ onAuthStateChanged(auth, async user => {
     await syncServerTime();
     const d = now(); d.setDate(d.getDate() + 30);
     document.getElementById("codeExpiry").value = d.toISOString().split("T")[0];
-    renderPbFields();
-    renderPbQuickPicks();
     await Promise.all([loadToday(), loadHistory(), loadVipCodes(), loadStats()]);
     startAutoRefresh();
   } else if (user) {
@@ -1008,268 +1018,18 @@ window.login = async function() {
   }
 };
 
-// ══════════════════════════════════════════════════════════════
-// ── PREDICTION BUILDER ──────────────────────────────────────
-// Generates tip strings in the exact syntax the public site's
-// getStatus()/evalAtomic() engine understands, so admins never
-// have to type raw codes by hand.
-// ══════════════════════════════════════════════════════════════
-
-const ATOMIC_MARKETS = [
-  { value: "1",         label: "Home Win (1)" },
-  { value: "X",         label: "Draw (X)" },
-  { value: "2",         label: "Away Win (2)" },
-  { value: "1X",        label: "Double Chance 1X" },
-  { value: "X2",        label: "Double Chance X2" },
-  { value: "12",        label: "Double Chance 12" },
-  { value: "DNB HOME",  label: "Draw No Bet — Home" },
-  { value: "DNB AWAY",  label: "Draw No Bet — Away" },
-  { value: "BTTS YES",  label: "BTTS — Yes" },
-  { value: "BTTS NO",   label: "BTTS — No" },
-  { value: "ODD",       label: "Odd Goals" },
-  { value: "EVEN",      label: "Even Goals" },
-  { value: "HOME CLEAN SHEET", label: "Home Clean Sheet" },
-  { value: "AWAY CLEAN SHEET", label: "Away Clean Sheet" },
-  { value: "HOME WIN TO NIL",  label: "Home Win to Nil" },
-  { value: "AWAY WIN TO NIL",  label: "Away Win to Nil" }
-];
-
-function pbField(html) { return `<div class="field" style="margin:0;">${html}</div>`; }
-function pbTeamSelect(id) {
-  return `<select id="${id}"><option value="HOME">Home Team</option><option value="AWAY">Away Team</option></select>`;
-}
-function pbLineInput(id, val) {
-  return `<input type="number" step="0.25" id="${id}" value="${val}" placeholder="2.5">`;
-}
-function pbHtCheckbox(id) {
-  return `<div class="pb-checkbox-row"><input type="checkbox" id="${id}"><label for="${id}">⏱ First Half Only (HT/1H)</label></div>`;
-}
-
-window.renderPbFields = function() {
-  const market = document.getElementById("pbMarket").value;
-  const wrap   = document.getElementById("pbFieldsWrap");
-  let html = "";
-
-  switch (market) {
-    case "1": case "X": case "2":
-    case "1X": case "X2": case "12":
-    case "DNB_HOME": case "DNB_AWAY":
-    case "BTTS_YES": case "BTTS_NO":
-    case "ODD": case "EVEN":
-      html = pbHtCheckbox("pbHt");
-      break;
-
-    case "OVER": case "UNDER":
-      html = `<div class="pb-row">
-        ${pbField(`<label>Line</label>${pbLineInput("pbLine", "2.5")}`)}
-        <div style="align-self:end;">${pbHtCheckbox("pbHt")}</div>
-      </div>`;
-      break;
-
-    case "TEAM_OVER": case "TEAM_UNDER":
-      html = `<div class="pb-row">
-        ${pbField(`<label>Team</label>${pbTeamSelect("pbTeam")}`)}
-        ${pbField(`<label>Line</label>${pbLineInput("pbLine", "1.5")}`)}
-      </div>${pbHtCheckbox("pbHt")}`;
-      break;
-
-    case "GOALS_RANGE":
-      html = `<div class="pb-row">
-        ${pbField(`<label>Min Goals</label><input type="number" id="pbLo" value="1">`)}
-        ${pbField(`<label>Max Goals</label><input type="number" id="pbHi" value="3">`)}
-      </div>${pbHtCheckbox("pbHt")}`;
-      break;
-
-    case "TEAM_GOALS_RANGE":
-      html = `<div class="pb-row">
-        ${pbField(`<label>Team</label>${pbTeamSelect("pbTeam")}`)}
-        <div class="pb-row" style="grid-column:span 1;">
-          ${pbField(`<label>Min</label><input type="number" id="pbLo" value="1">`)}
-        </div>
-      </div>
-      <div class="pb-row">
-        ${pbField(`<label>Max Goals</label><input type="number" id="pbHi" value="2">`)}
-        <div></div>
-      </div>${pbHtCheckbox("pbHt")}`;
-      break;
-
-    case "CLEAN_SHEET": case "WIN_TO_NIL":
-      html = pbField(`<label>Team</label>${pbTeamSelect("pbTeam")}`);
-      break;
-
-    case "AH":
-      html = `<div class="pb-row">
-        ${pbField(`<label>Team</label>${pbTeamSelect("pbTeam")}`)}
-        ${pbField(`<label>Handicap Line (e.g. -1.5, +0.5)</label><input type="number" step="0.25" id="pbLine" value="-1.5">`)}
-      </div>`;
-      break;
-
-    case "CORRECT_SCORE":
-      html = `<div class="pb-row">
-        ${pbField(`<label>Home Goals</label><input type="number" id="pbHomeScore" value="2" min="0">`)}
-        ${pbField(`<label>Away Goals</label><input type="number" id="pbAwayScore" value="1" min="0">`)}
-      </div>`;
-      break;
-
-    case "HTFT":
-      html = `<div class="pb-row">
-        ${pbField(`<label>Half-Time</label><select id="pbHtResult"><option value="1">Home</option><option value="X">Draw</option><option value="2">Away</option></select>`)}
-        ${pbField(`<label>Full-Time</label><select id="pbFtResult"><option value="1">Home</option><option value="X">Draw</option><option value="2">Away</option></select>`)}
-      </div>`;
-      break;
-
-    case "WIN_EITHER_HALF":
-      html = pbField(`<label>Team</label>${pbTeamSelect("pbTeam")}`);
-      break;
-
-    case "QUALIFY":
-      html = pbField(`<label>Team</label>${pbTeamSelect("pbTeam")}`) +
-        `<p style="font-size:11px;color:var(--text-muted);margin-top:6px;">⚠ Also set "Qualification Winner" in the match form below once the result is known — that's what the site checks to settle this bet.</p>`;
-      break;
-
-    case "CORNERS":
-      html = `<div class="pb-row">
-        ${pbField(`<label>Direction</label><select id="pbDir"><option value="OVER">Over</option><option value="UNDER">Under</option></select>`)}
-        ${pbField(`<label>Line</label><input type="number" step="0.5" id="pbLine" value="9.5">`)}
-      </div>
-      <p style="font-size:11px;color:var(--text-muted);">This will also switch "Tip Type" to 🚩 Corners when inserted.</p>`;
-      break;
-
-    case "COMBO":
-      html = buildComboLegHTML(1) + buildComboLegHTML(2);
-      break;
-  }
-
-  wrap.innerHTML = html;
-  wrap.querySelectorAll("input,select").forEach(el => {
-    el.addEventListener("input", updatePbPreview);
-    el.addEventListener("change", updatePbPreview);
-  });
-  updatePbPreview();
-};
-
-function buildComboLegHTML(n) {
-  const opts = ATOMIC_MARKETS.map(m => `<option value="${m.value}">${m.label}</option>`).join("");
-  return `
-    <div class="pb-leg">
-      <div class="pb-leg-title">Leg ${n}</div>
-      <div class="field" style="margin-bottom:8px;"><select id="pbLeg${n}">${opts}</select></div>
-      ${pbHtCheckbox("pbLeg" + n + "Ht")}
-    </div>`;
-}
-
-function buildAtomicTip(market) {
-  const g = id => document.getElementById(id);
-  const ht = id => g(id) && g(id).checked ? "HT " : "";
-
-  switch (market) {
-    case "1": case "X": case "2":
-      return ht("pbHt") + market;
-    case "1X": case "X2": case "12":
-      return ht("pbHt") + market;
-    case "DNB_HOME": return ht("pbHt") + "DNB HOME";
-    case "DNB_AWAY": return ht("pbHt") + "DNB AWAY";
-    case "OVER":  return ht("pbHt") + "OVER " + (g("pbLine")?.value || "2.5");
-    case "UNDER": return ht("pbHt") + "UNDER " + (g("pbLine")?.value || "2.5");
-    case "TEAM_OVER":  return ht("pbHt") + g("pbTeam").value + " OVER " + (g("pbLine")?.value || "1.5");
-    case "TEAM_UNDER": return ht("pbHt") + g("pbTeam").value + " UNDER " + (g("pbLine")?.value || "1.5");
-    case "GOALS_RANGE": return ht("pbHt") + "GOALS " + (g("pbLo")?.value || 1) + "-" + (g("pbHi")?.value || 3);
-    case "TEAM_GOALS_RANGE": return ht("pbHt") + g("pbTeam").value + " GOALS " + (g("pbLo")?.value || 1) + "-" + (g("pbHi")?.value || 2);
-    case "BTTS_YES": return ht("pbHt") + "BTTS YES";
-    case "BTTS_NO":  return ht("pbHt") + "BTTS NO";
-    case "ODD":  return ht("pbHt") + "ODD";
-    case "EVEN": return ht("pbHt") + "EVEN";
-    case "CLEAN_SHEET": return g("pbTeam").value + " CLEAN SHEET";
-    case "WIN_TO_NIL":  return g("pbTeam").value + " WIN TO NIL";
-    case "AH": return g("pbTeam").value + " AH " + (g("pbLine")?.value || "-1.5");
-    case "CORRECT_SCORE": return (g("pbHomeScore")?.value ?? 2) + "-" + (g("pbAwayScore")?.value ?? 1);
-    case "HTFT": return (g("pbHtResult")?.value || "1") + "/" + (g("pbFtResult")?.value || "1");
-    case "WIN_EITHER_HALF": return g("pbTeam").value + " WIN EITHER HALF";
-    case "QUALIFY": return g("pbTeam").value + " TO QUALIFY";
-    case "CORNERS": return (g("pbDir")?.value || "OVER") + " " + (g("pbLine")?.value || "9.5");
-    default: return "";
-  }
-}
-
-function buildPbPreviewText() {
-  const market = document.getElementById("pbMarket").value;
-  if (market === "COMBO") {
-    const legs = [1, 2].map(n => {
-      const legMarket = document.getElementById("pbLeg" + n)?.value || "1";
-      const isHt = document.getElementById("pbLeg" + n + "Ht")?.checked;
-      const base = ATOMIC_MARKETS.find(m => m.value === legMarket)?.value || legMarket;
-      return (isHt ? "HT " : "") + base;
-    });
-    return legs.join(" & ");
-  }
-  return buildAtomicTip(market);
-}
-
-window.updatePbPreview = function() {
-  const text = buildPbPreviewText();
-  document.getElementById("pbPreview").innerText = text || "—";
-};
-
-window.usePbTip = function() {
-  const market = document.getElementById("pbMarket").value;
-  const text   = buildPbPreviewText();
-  if (!text) { showToast("⚠ Fill in the fields first", "red"); return; }
-
-  document.getElementById("tip").value = text;
-  document.getElementById("tipType").value = (market === "CORNERS") ? "corners" : "goals";
-
-  const tipEl = document.getElementById("tip");
-  tipEl.style.transition = "box-shadow .3s";
-  tipEl.style.boxShadow = "0 0 0 3px rgba(68,138,255,0.35)";
-  setTimeout(() => { tipEl.style.boxShadow = ""; }, 700);
-  tipEl.scrollIntoView({ behavior: "smooth", block: "center" });
-  showToast("✅ Tip inserted: " + text, "green");
-};
-
-const PB_QUICK_PICKS = [
-  { label: "Home Win",        tip: "HOME" },
-  { label: "Away Win",        tip: "AWAY" },
-  { label: "Draw",            tip: "X" },
-  { label: "Double Chance 1X",tip: "1X" },
-  { label: "Double Chance X2",tip: "X2" },
-  { label: "BTTS Yes",        tip: "BTTS YES" },
-  { label: "Over 1.5",        tip: "OVER 1.5" },
-  { label: "Over 2.5",        tip: "OVER 2.5" },
-  { label: "Under 2.5",       tip: "UNDER 2.5" },
-  { label: "DNB Home",        tip: "DNB HOME" },
-  { label: "Home & Over 1.5", tip: "HOME & OVER 1.5" },
-  { label: "1X & BTTS Yes",   tip: "1X & BTTS YES" }
-];
-
-function renderPbQuickPicks() {
-  const wrap = document.getElementById("pbQuickPicks");
-  wrap.innerHTML = PB_QUICK_PICKS.map(q =>
-    `<div class="pb-quick-chip" onclick="quickInsertTip('${q.tip.replace(/'/g,"\\'")}')">${q.label}</div>`
-  ).join("");
-}
-
-window.quickInsertTip = function(tip) {
-  document.getElementById("tip").value = tip;
-  document.getElementById("tipType").value = "goals";
-  const tipEl = document.getElementById("tip");
-  tipEl.style.transition = "box-shadow .3s";
-  tipEl.style.boxShadow = "0 0 0 3px rgba(68,138,255,0.35)";
-  setTimeout(() => { tipEl.style.boxShadow = ""; }, 700);
-  tipEl.scrollIntoView({ behavior: "smooth", block: "center" });
-  showToast("✅ Tip inserted: " + tip, "green");
-};
-
 // ── Matches — Save ────────────────────────────────────────────
 window.saveMatch = async function() {
   const btn   = document.getElementById("saveBtn");
   const msgEl = document.getElementById("msg");
 
-  const dateVal  = document.getElementById("date").value;
-  const timeVal  = document.getElementById("time").value;
-  const matchVal = document.getElementById("match").value.trim();
-  const tipVal   = document.getElementById("tip").value.trim();
-  const oddVal   = document.getElementById("odd").value.trim();
-  const ftVal    = document.getElementById("ft").value.trim();
+  const dateVal   = document.getElementById("date").value;
+  const timeVal   = document.getElementById("time").value;
+  const leagueVal = document.getElementById("league").value.trim();
+  const matchVal  = document.getElementById("match").value.trim();
+  const tipVal    = document.getElementById("tip").value.trim();
+  const oddVal    = document.getElementById("odd").value.trim();
+  const ftVal     = document.getElementById("ft").value.trim();
 
   if (!dateVal || !timeVal || !matchVal || !tipVal || !oddVal || !ftVal) {
     setFeedback(msgEl, "⚠ Fill in all required fields", "error"); return;
@@ -1285,6 +1045,7 @@ window.saveMatch = async function() {
   const data = {
     date:    formattedDate,
     time:    timeVal,
+    league:  leagueVal || null,
     match:   matchVal,
     tip:     tipVal,
     odd:     oddVal,
@@ -1292,7 +1053,6 @@ window.saveMatch = async function() {
     corners: document.getElementById("corners").value ? Number(document.getElementById("corners").value) : null,
     type:    matchType,
     tipType: document.getElementById("tipType").value,
-    qualified: document.getElementById("qualified").value || null,
     updatedAt: new Date().toISOString()
   };
 
@@ -1317,6 +1077,7 @@ window.saveMatch = async function() {
 
       setFeedback(msgEl, "✔ Match saved!", "success");
     }
+    rememberLeague(leagueVal);
     clearInputs();
     await Promise.all([loadToday(), loadHistory(), loadStats()]);
   } catch (e) {
@@ -1334,12 +1095,11 @@ window.cancelEdit = function() {
 };
 
 function clearInputs() {
-  ["date","time","match","tip","odd","ft","corners"].forEach(id => {
+  ["date","time","league","match","tip","odd","ft","corners"].forEach(id => {
     document.getElementById(id).value = "";
   });
   document.getElementById("type").value    = "vip";
   document.getElementById("tipType").value = "goals";
-  document.getElementById("qualified").value = "";
   document.getElementById("saveBtn").innerHTML = "Save Match";
   document.getElementById("cancelEditBtn").classList.add("hidden");
 }
@@ -1365,6 +1125,7 @@ async function loadToday() {
   const classify = (snap, matchType) => {
     snap.forEach(docSnap => {
       const m = { id: docSnap.id, ...docSnap.data(), type: matchType, _col: matchType === "free" ? "matches_free" : "matches_vip" };
+      if (m.league) rememberLeague(m.league);
       if (!m.date) return;
       const iso = parseDate(m.date); if (!iso) return;
       const dt  = new Date(iso + "T" + (m.time || "00:00") + ":00");
@@ -1399,7 +1160,8 @@ async function loadToday() {
 function renderMatchItem(m, container, showDate) {
   const div = document.createElement("div");
   div.className = "match-item";
-  const dateMeta = showDate ? `<span class="meta-chip">📅 ${m.date}</span>` : "";
+  const dateMeta   = showDate ? `<span class="meta-chip">📅 ${m.date}</span>` : "";
+  const leagueMeta = m.league ? `<span class="meta-chip">🏆 ${m.league}</span>` : "";
   const isPending = !m.ft || m.ft === "???";
   div.innerHTML = `
     <div class="match-item-header">
@@ -1407,6 +1169,7 @@ function renderMatchItem(m, container, showDate) {
       <span class="match-badge ${m.type === 'vip' ? 'badge-vip' : 'badge-free'}">${m.type === 'vip' ? '💎 VIP' : '🆓 FREE'}</span>
     </div>
     <div class="match-meta">
+      ${leagueMeta}
       ${dateMeta}
       <span class="meta-chip">🕒 ${m.time || '--:--'}</span>
       <span class="meta-chip">${m.tipType === 'corners' ? '🚩' : '⚽'} ${m.tip}</span>
@@ -1414,7 +1177,6 @@ function renderMatchItem(m, container, showDate) {
       <span class="meta-chip">FT: ${m.ft}</span>
       ${isPending ? `<span class="meta-chip" style="color:var(--orange);">⏳ Pending</span>` : ''}
       ${m.tipType === 'corners' && m.corners ? `<span class="meta-chip">Corners: ${m.corners}</span>` : ''}
-      ${m.qualified ? `<span class="meta-chip" style="color:var(--blue);">🏆 ${m.qualified} qualifies</span>` : ''}
     </div>
     <div class="match-actions">
       <button class="btn btn-ghost btn-sm" onclick="editMatch('${m.id}','${m._col}')">✏ Edit</button>
@@ -1440,6 +1202,7 @@ async function loadHistory() {
         <span class="match-badge ${col === 'matches_vip' ? 'badge-vip' : 'badge-free'}">${col === 'matches_vip' ? '💎 VIP' : '🆓 FREE'}</span>
       </div>
       <div class="match-meta">
+        ${m.league ? `<span class="meta-chip">🏆 ${m.league}</span>` : ''}
         <span class="meta-chip">📅 ${m.date}</span>
         <span class="meta-chip">🕒 ${m.time || '--:--'}</span>
         <span class="meta-chip">⚽ ${m.tip}</span>
@@ -1478,6 +1241,7 @@ window.editMatch = async function(id, col) {
   const iso  = parseDate(d.date);
   document.getElementById("date").value    = iso || "";
   document.getElementById("time").value    = d.time || "";
+  document.getElementById("league").value  = d.league || "";
   document.getElementById("match").value   = d.match || "";
   document.getElementById("tip").value     = d.tip || "";
   document.getElementById("odd").value     = d.odd || "";
@@ -1485,7 +1249,6 @@ window.editMatch = async function(id, col) {
   document.getElementById("type").value    = d.type || "vip";
   document.getElementById("tipType").value = d.tipType || "goals";
   document.getElementById("corners").value = d.corners || "";
-  document.getElementById("qualified").value = d.qualified || "";
   editId  = id;
   editCol = col;
   document.getElementById("saveBtn").innerHTML = "✔ Update Match";
@@ -1683,64 +1446,398 @@ window.deleteVipCode = function(id) {
 };
 
 // ── Visitors ─────────────────────────────────────────────────
+const ONLINE_WINDOW_MS = 5 * 60 * 1000;
+
 window.loadVisitors = async function() {
   const list = document.getElementById("visitorsList");
   list.innerHTML = '<div class="loading-row"><span class="loader"></span> Loading…</div>';
   try {
     const snap = await getDocs(collection(db, "analytics_visitors"));
-    const visitors = [];
-    snap.forEach(d => visitors.push({ id: d.id, ...d.data() }));
-
-    const nowMs = now().getTime();
-    const ONLINE_WINDOW_MS = 5 * 60 * 1000;
-    const n = now();
-    const todayStr = [String(n.getDate()).padStart(2,"0"), String(n.getMonth()+1).padStart(2,"0"), n.getFullYear()].join(".");
-
-    let onlineCount = 0, todayCount = 0, totalVisits = 0;
-    visitors.forEach(v => {
-      const lastSeenMs = v.lastSeen ? new Date(v.lastSeen).getTime() : 0;
-      if (nowMs - lastSeenMs <= ONLINE_WINDOW_MS) onlineCount++;
-      if (v.lastDate === todayStr) todayCount++;
-      totalVisits += v.visits || 0;
-    });
-
-    document.getElementById("totalVisitors").innerText     = visitors.length;
-    document.getElementById("onlineNowCount").innerText     = onlineCount;
-    document.getElementById("visitorsTodayCount").innerText = todayCount;
-    document.getElementById("totalVisitsCount").innerText   = totalVisits;
-
-    if (!visitors.length) {
-      list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No visitors tracked yet</div>';
-      return;
-    }
-
-    visitors.sort((a, b) => new Date(b.lastSeen || 0) - new Date(a.lastSeen || 0));
-    list.innerHTML = "";
-    visitors.forEach(v => {
-      const lastSeenMs = v.lastSeen ? new Date(v.lastSeen).getTime() : 0;
-      const isOnline   = nowMs - lastSeenMs <= ONLINE_WINDOW_MS;
-      const div = document.createElement("div");
-      div.className = "user-card";
-      div.innerHTML = `
-        <div class="user-card-top">
-          <div class="user-avatar${isOnline ? ' online-avatar' : ''}">${isOnline ? '🟢' : '⚪'}</div>
-          <div class="user-info">
-            <div class="user-email">${v.id}</div>
-            <div class="user-uid">First seen: ${v.firstSeen ? new Date(v.firstSeen).toLocaleString() : 'N/A'}</div>
-            <div class="user-badges">
-              ${isOnline ? '<span class="user-badge badge-online">🟢 Online now</span>' : ''}
-              <span class="user-badge badge-standard">👁 ${v.visits || 0} visits</span>
-              <span class="user-badge badge-standard">📅 ${v.daysActive || 1} day${(v.daysActive||1) > 1 ? 's' : ''} active</span>
-              ${v.vipUnlockedEver ? '<span class="user-badge badge-code">💎 Used VIP</span>' : ''}
-            </div>
-            <div class="user-expiry">🕒 Last seen: ${v.lastSeen ? new Date(v.lastSeen).toLocaleString() : 'N/A'}</div>
-          </div>
-        </div>`;
-      list.appendChild(div);
-    });
+    allVisitors = [];
+    snap.forEach(d => allVisitors.push({ id: d.id, ...d.data() }));
+    renderVisitorsList();
   } catch (e) {
     list.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>${e.message}</div>`;
   }
+};
+
+window.setVisitorFilter = function(filter, el) {
+  visitorFilter = filter;
+  document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active-all","active-vip","active-disabled"));
+  const cls = filter === "blocked" ? "active-disabled" : filter === "vip" ? "active-vip" : "active-all";
+  el.classList.add(cls);
+  renderVisitorsList();
+};
+
+// ── View toggle: Cards vs Table ───────────────────────────────
+window.setVisitorView = function(view) {
+  visitorView = view;
+  document.getElementById("viewCardsBtn").classList.toggle("active", view === "cards");
+  document.getElementById("viewTableBtn").classList.toggle("active", view === "table");
+  document.getElementById("visitorsList").classList.toggle("hidden", view !== "cards");
+  document.getElementById("visitorsTableWrap").classList.toggle("hidden", view !== "table");
+  renderVisitorsList();
+};
+
+window.setVisitorSort = function(key) {
+  if (visitorSortKey === key) {
+    visitorSortDir = visitorSortDir === "asc" ? "desc" : "asc";
+  } else {
+    visitorSortKey = key;
+    visitorSortDir = "desc";
+  }
+  renderVisitorsList();
+};
+
+function getFilteredVisitors() {
+  const nowMs = now().getTime();
+  const n = now();
+  const todayStr = [String(n.getDate()).padStart(2,"0"), String(n.getMonth()+1).padStart(2,"0"), n.getFullYear()].join(".");
+  const searchTerm = (document.getElementById("visitorSearchInput")?.value || "").trim().toLowerCase();
+
+  return allVisitors.filter(v => {
+    const lastSeenMs = v.lastSeen ? new Date(v.lastSeen).getTime() : 0;
+    const isOnline   = nowMs - lastSeenMs <= ONLINE_WINDOW_MS;
+    if (visitorFilter === "online"  && !isOnline)          return false;
+    if (visitorFilter === "vip"     && !v.vipUnlockedEver) return false;
+    if (visitorFilter === "blocked" && !v.blocked)          return false;
+    if (searchTerm) {
+      const hay = `${v.id} ${v.name || ""} ${v.email || ""}`.toLowerCase();
+      if (!hay.includes(searchTerm)) return false;
+    }
+    return true;
+  });
+}
+
+function sortVisitors(list) {
+  const nowMs = now().getTime();
+  const dir = visitorSortDir === "asc" ? 1 : -1;
+  const key = visitorSortKey;
+
+  const getVal = (v) => {
+    switch (key) {
+      case "name":       return (v.name || v.id || "").toLowerCase();
+      case "id":         return (v.id || "").toLowerCase();
+      case "status":     { const lastSeenMs = v.lastSeen ? new Date(v.lastSeen).getTime() : 0; return (nowMs - lastSeenMs <= ONLINE_WINDOW_MS) ? 1 : 0; }
+      case "visits":     return Number(v.visits || 0);
+      case "daysActive": return Number(v.daysActive || 1);
+      case "vip":        return v.vipUnlockedEver ? 1 : 0;
+      case "blocked":     return v.blocked ? 1 : 0;
+      case "firstSeen":  return v.firstSeen ? new Date(v.firstSeen).getTime() : 0;
+      case "lastSeen":   return v.lastSeen ? new Date(v.lastSeen).getTime() : 0;
+      default:           return 0;
+    }
+  };
+
+  return [...list].sort((a, b) => {
+    const va = getVal(a), vb = getVal(b);
+    if (va < vb) return -1 * dir;
+    if (va > vb) return 1 * dir;
+    return 0;
+  });
+}
+
+function updateSortArrows() {
+  ["name","id","status","visits","daysActive","vip","blocked","firstSeen","lastSeen"].forEach(k => {
+    const el = document.getElementById("arrow-" + k);
+    if (!el) return;
+    el.innerText = (k === visitorSortKey) ? (visitorSortDir === "asc" ? "▲" : "▼") : "";
+  });
+}
+
+window.renderVisitorsList = function() {
+  const nowMs = now().getTime();
+  const n = now();
+  const todayStr = [String(n.getDate()).padStart(2,"0"), String(n.getMonth()+1).padStart(2,"0"), n.getFullYear()].join(".");
+
+  let onlineCount = 0, todayCount = 0, blockedCount = 0;
+  allVisitors.forEach(v => {
+    const lastSeenMs = v.lastSeen ? new Date(v.lastSeen).getTime() : 0;
+    if (nowMs - lastSeenMs <= ONLINE_WINDOW_MS) onlineCount++;
+    if (v.lastDate === todayStr) todayCount++;
+    if (v.blocked) blockedCount++;
+  });
+
+  document.getElementById("totalVisitors").innerText      = allVisitors.length;
+  document.getElementById("onlineNowCount").innerText      = onlineCount;
+  document.getElementById("visitorsTodayCount").innerText  = todayCount;
+  document.getElementById("blockedVisitorsCount").innerText = blockedCount;
+
+  const visible = sortVisitors(getFilteredVisitors());
+
+  if (visitorView === "table") {
+    renderVisitorsTable(visible);
+  } else {
+    renderVisitorsCards(visible);
+  }
+};
+
+function renderVisitorsCards(visible) {
+  const list = document.getElementById("visitorsList");
+  const nowMs = now().getTime();
+
+  if (!allVisitors.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>No visitors tracked yet</div>';
+    return;
+  }
+  if (!visible.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>No visitors match this filter</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+  visible.forEach(v => {
+    const lastSeenMs = v.lastSeen ? new Date(v.lastSeen).getTime() : 0;
+    const isOnline   = nowMs - lastSeenMs <= ONLINE_WINDOW_MS;
+    const isBlocked  = !!v.blocked;
+    const div = document.createElement("div");
+    div.className = "user-card" + (isBlocked ? " disabled-card" : "");
+    const avatarCls = isBlocked ? "disabled-avatar" : isOnline ? "online-avatar" : "";
+    const avatarIcon = isBlocked ? "🚫" : isOnline ? "🟢" : "⚪";
+    div.innerHTML = `
+      <div class="user-card-top">
+        <div class="user-avatar ${avatarCls}">${avatarIcon}</div>
+        <div class="user-info">
+          <div class="user-email">${escapeHtml(v.name || v.id)}</div>
+          <div class="user-uid">${v.email ? escapeHtml(v.email) + ' · ' : ''}ID: ${escapeHtml(v.id)}</div>
+          <div class="user-uid">First seen: ${v.firstSeen ? new Date(v.firstSeen).toLocaleString() : 'N/A'}</div>
+          <div class="user-badges">
+            ${isBlocked ? '<span class="user-badge badge-disabled">🚫 Blocked</span>' : ''}
+            ${isOnline && !isBlocked ? '<span class="user-badge badge-online">🟢 Online now</span>' : ''}
+            <span class="user-badge badge-standard">👁 ${v.visits || 0} visits</span>
+            <span class="user-badge badge-standard">📅 ${v.daysActive || 1} day${(v.daysActive||1) > 1 ? 's' : ''} active</span>
+            ${v.vipUnlockedEver ? '<span class="user-badge badge-code">💎 Used VIP</span>' : ''}
+          </div>
+          <div class="user-expiry">🕒 Last seen: ${v.lastSeen ? new Date(v.lastSeen).toLocaleString() : 'N/A'}</div>
+          <div class="user-actions">
+            ${isBlocked
+              ? `<button class="btn btn-success btn-sm" onclick="unblockVisitor('${v.id}')">✅ Unblock</button>`
+              : `<button class="btn btn-danger btn-sm" onclick="blockVisitor('${v.id}')">🚫 Block</button>`}
+            <button class="btn btn-warning btn-sm" onclick="forceResetDevice('${v.id}')">🧹 Reset Device</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteVisitor('${v.id}')">🗑 Delete</button>
+          </div>
+        </div>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function renderVisitorsTable(visible) {
+  const tbody = document.getElementById("visitorsTableBody");
+  const nowMs = now().getTime();
+  updateSortArrows();
+
+  if (!allVisitors.length) {
+    tbody.innerHTML = `<tr><td colspan="10"><div class="table-empty">📭 No visitors tracked yet</div></td></tr>`;
+    return;
+  }
+  if (!visible.length) {
+    tbody.innerHTML = `<tr><td colspan="10"><div class="table-empty">🔍 No visitors match this filter</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = visible.map(v => {
+    const lastSeenMs = v.lastSeen ? new Date(v.lastSeen).getTime() : 0;
+    const isOnline   = nowMs - lastSeenMs <= ONLINE_WINDOW_MS;
+    const isBlocked  = !!v.blocked;
+    return `
+      <tr class="${isBlocked ? 'row-blocked' : ''}">
+        <td class="wrap-cell">
+          <div class="cell-name">${escapeHtml(v.name || '—')}</div>
+          ${v.email ? `<div class="cell-email">${escapeHtml(v.email)}</div>` : ''}
+        </td>
+        <td class="cell-id">${escapeHtml(v.id)}</td>
+        <td>
+          <span class="dot-inline ${isOnline ? 'dot-online' : 'dot-offline'}"></span>${isOnline ? 'Online' : 'Offline'}
+        </td>
+        <td>${v.visits || 0}</td>
+        <td>${v.daysActive || 1}</td>
+        <td>${v.vipUnlockedEver ? '<span class="user-badge badge-code">💎 Yes</span>' : '<span class="user-badge badge-standard">No</span>'}</td>
+        <td>${isBlocked ? '<span class="user-badge badge-disabled">🚫 Blocked</span>' : '<span class="user-badge badge-standard">Active</span>'}</td>
+        <td>${v.firstSeen ? new Date(v.firstSeen).toLocaleString() : 'N/A'}</td>
+        <td>${v.lastSeen ? new Date(v.lastSeen).toLocaleString() : 'N/A'}</td>
+        <td>
+          <div class="action-cell">
+            ${isBlocked
+              ? `<button class="btn btn-success btn-sm" onclick="unblockVisitor('${v.id}')">✅ Unblock</button>`
+              : `<button class="btn btn-danger btn-sm" onclick="blockVisitor('${v.id}')">🚫 Block</button>`}
+            <button class="btn btn-warning btn-sm" onclick="forceResetDevice('${v.id}')">🧹 Reset</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteVisitor('${v.id}')">🗑 Delete</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+// ── Export visible visitors to CSV ────────────────────────────
+window.exportVisitorsCsv = function() {
+  const visible = sortVisitors(getFilteredVisitors());
+  if (!visible.length) { showToast("⚠ No visitors to export", "red"); return; }
+
+  const headers = ["Name","Email","Visitor ID","Status","Visits","DaysActive","VIP Used","Blocked","First Seen","Last Seen"];
+  const nowMs = now().getTime();
+  const escCsv = s => `"${String(s ?? "").replace(/"/g, '""')}"`;
+
+  const rows = visible.map(v => {
+    const lastSeenMs = v.lastSeen ? new Date(v.lastSeen).getTime() : 0;
+    const isOnline = nowMs - lastSeenMs <= ONLINE_WINDOW_MS;
+    return [
+      v.name || "", v.email || "", v.id || "",
+      isOnline ? "Online" : "Offline",
+      v.visits || 0, v.daysActive || 1,
+      v.vipUnlockedEver ? "Yes" : "No",
+      v.blocked ? "Yes" : "No",
+      v.firstSeen ? new Date(v.firstSeen).toLocaleString() : "",
+      v.lastSeen ? new Date(v.lastSeen).toLocaleString() : ""
+    ].map(escCsv).join(",");
+  });
+
+  const csv = [headers.map(escCsv).join(","), ...rows].join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url;
+  a.download = `visitors_${todayISO()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`⬇ Exported ${visible.length} visitors`, "gold");
+};
+
+window.blockVisitor = function(visitorId) {
+  openConfirm({
+    icon: "🚫", title: "Block Visitor",
+    msg: `Mtumiaji huyu hataweza kufungua app tena mpaka umruhusu upya. Endelea?`,
+    btnLabel: "🚫 Block", btnClass: "btn-danger", modalClass: "danger-modal",
+    action: async () => {
+      await updateDoc(doc(db, "analytics_visitors", visitorId), {
+        blocked: true,
+        blockedAt: new Date().toISOString()
+      });
+      await loadVisitors();
+      showToast("🚫 Mtumiaji amezuiwa", "red");
+    }
+  });
+};
+
+window.unblockVisitor = function(visitorId) {
+  openConfirm({
+    icon: "✅", title: "Unblock Visitor",
+    msg: `Mtumiaji huyu ataweza kufungua app tena. Endelea?`,
+    btnLabel: "✅ Unblock", btnClass: "btn-success", modalClass: "warn-modal",
+    action: async () => {
+      await updateDoc(doc(db, "analytics_visitors", visitorId), {
+        blocked: false,
+        blockedAt: null
+      });
+      await loadVisitors();
+      showToast("✅ Mtumiaji ameruhusiwa tena", "green");
+    }
+  });
+};
+
+// ── Remote Device Reset ─────────────────────────────────────────
+// Hii HAIGUSI analytics_visitors doc. Inaandika/kusasisha doc tofauti
+// kwenye "device_resets/{visitorId}" na flag `resetRequested: true`.
+// Kwa upande wa client (app ya mtumiaji), ongeza listener inayofanana
+// na "startBlockedWatcher" iliyopo tayari kwa `blocked`, lakini
+// ikisikiliza doc hii mpya — na ikiwa resetRequested === true,
+// ifute localStorage (na sessionStorage/caches nyingine za mtaa),
+// kisha i-acknowledge (weka resetRequested:false) ili isirudie kufuta
+// kila mara. Doc hii ipo kando na analytics_visitors ili endelea
+// kupatikana hata baada ya delete ya account — vinginevyo flag
+// ingepotea pamoja na doc iliyofutwa kabla kifaa hakijaisoma.
+async function requestDeviceReset(visitorId, reason) {
+  await setDoc(doc(db, "device_resets", visitorId), {
+    resetRequested: true,
+    requestedAt: new Date().toISOString(),
+    requestedBy: auth.currentUser?.email || "unknown",
+    reason: reason || "manual"
+  }, { merge: true });
+}
+
+window.forceResetDevice = function(visitorId) {
+  openConfirm({
+    icon: "🧹", title: "Reset Device",
+    msg: `Hii italazimisha kifaa cha mtumiaji huyu (${visitorId}) kifute local data yake (localStorage) mara ijayo atakapofungua app. Account/visits history yake HAITAFUTWA — code za VIP hazitaguswa. Endelea?`,
+    btnLabel: "🧹 Reset Device", btnClass: "btn-warning", modalClass: "warn-modal",
+    action: async () => {
+      try {
+        await requestDeviceReset(visitorId, "manual");
+        showToast("🧹 Reset command imetumwa kwa kifaa", "gold");
+      } catch (e) {
+        showToast("❌ " + e.message, "red");
+      }
+    }
+  });
+};
+
+// Kufuta mtumiaji KABISA:
+//  1) inaachia (release) VIP code yoyote aliyokuwa ameitumia, ili kifaa
+//     kingine kiweze kuitumia tena.
+//  2) inafuta record yake nzima kwenye analytics_visitors.
+//  3) inaandika audit log fupi kwenye "deletion_log" kwa uwazi.
+// Zote (1)+(2) zinafanyika kama batch moja ili zisiache data "nusu-nusu".
+// Modal inalazimisha admin aandike "DELETE" kabla ya kuendelea (angalia
+// openConfirm({ requireTypeConfirm:true }) hapa chini).
+window.deleteVisitor = function(visitorId) {
+  openConfirm({
+    icon: "🗑️", title: "Delete User Permanently",
+    msg: `Hii itafuta DATA ZOTE za mtumiaji huyu (${visitorId}) kabisa — visits, VIP history, block status — itaachia (release) VIP code yake kama anayo, NA italazimisha kifaa chake kifute localStorage yake mara ijayo atakapofungua app. HAKUNA KURUDISHA. Akifungua app tena atahesabiwa kama mtumiaji mpya kabisa.`,
+    btnLabel: "🗑 Delete Forever", btnClass: "btn-danger", modalClass: "danger-modal",
+    requireTypeConfirm: true,
+    action: async () => {
+      try {
+        const codesSnap = await getDocs(
+          query(collection(db, "vip_codes"), where("redeemedBy", "==", visitorId))
+        );
+
+        const batch = writeBatch(db);
+        let releasedCodes = 0;
+        codesSnap.forEach(d => {
+          batch.update(doc(db, "vip_codes", d.id), { redeemedBy: null, redeemedAt: null });
+          releasedCodes++;
+        });
+        batch.delete(doc(db, "analytics_visitors", visitorId));
+        // Andika flag kwenye collection TOFAUTI (device_resets) badala ya
+        // analytics_visitors, kwa sababu doc ya visitor inafutwa hapo hapo —
+        // ikiwa flag ingekuwa kwenye doc hiyo hiyo, ingepotea kabla kifaa
+        // hakijapata nafasi ya kuisoma. device_resets inabaki hai peke yake
+        // mpaka kifaa kimekiri (acknowledge) kuwa kimefuta localStorage yake.
+        batch.set(doc(db, "device_resets", visitorId), {
+          resetRequested: true,
+          requestedAt: new Date().toISOString(),
+          requestedBy: auth.currentUser?.email || "unknown",
+          reason: "account_deleted"
+        }, { merge: true });
+        await batch.commit();
+
+        // Best-effort audit trail — haizuii deletion ikiwa itashindwa.
+        try {
+          await addDoc(collection(db, "deletion_log"), {
+            visitorId,
+            deletedBy: auth.currentUser?.email || "unknown",
+            releasedCodes,
+            deviceResetRequested: true,
+            deletedAt: new Date().toISOString()
+          });
+        } catch (logErr) {
+          console.warn("Audit log write failed (non-critical):", logErr.message);
+        }
+
+        await Promise.all([loadVisitors(), loadVipCodes()]);
+        showToast(
+          releasedCodes > 0
+            ? `🗑 Data zimefutwa · code ${releasedCodes} imefunguliwa · reset imetumwa`
+            : "🗑 Data zimefutwa kabisa · reset command imetumwa",
+          "red"
+        );
+      } catch (e) {
+        showToast("❌ " + e.message, "red");
+      }
+    }
+  });
 };
 
 // ── Stats ─────────────────────────────────────────────────────
@@ -1777,4 +1874,5 @@ window.confirmLogout        = async () => { await signOut(auth); document.getEle
 </script>
 </body>
 </html>
+
 
