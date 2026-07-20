@@ -490,6 +490,7 @@
       <button class="nav-btn"        onclick="showTab('history')"   id="btnHistory">📊 History</button>
       <button class="nav-btn"        onclick="showTab('codes')"     id="btnCodes">🔑 VIP Codes</button>
       <button class="nav-btn"        onclick="showTab('visitors')"  id="btnVisitors">📈 Visitors</button>
+      <button class="nav-btn"        onclick="showTab('vipUsers')"  id="btnVipUsers">👑 VIP Users</button>
     </div>
 
     <!-- TODAY -->
@@ -504,7 +505,81 @@
         <datalist id="leagueSuggestions"></datalist>
         <div class="field"><label>Match</label><input type="text" id="match" placeholder="Arsenal vs Chelsea"></div>
         <div class="form-row">
-          <div class="field"><label>Tip</label><input type="text" id="tip" placeholder="Over 2.5"></div>
+          <div class="field">
+            <label>Tip</label>
+            <select id="tipPreset" onchange="handleTipPresetChange()">
+              <option value="">— Chagua Tip —</option>
+              <optgroup label="Matokeo (1X2)">
+                <option value="1">1 — Home Win</option>
+                <option value="X">X — Draw</option>
+                <option value="2">2 — Away Win</option>
+              </optgroup>
+              <optgroup label="Double Chance">
+                <option value="1X">1X — Home / Draw</option>
+                <option value="X2">X2 — Draw / Away</option>
+                <option value="12">12 — Home / Away</option>
+              </optgroup>
+              <optgroup label="Draw No Bet">
+                <option value="DNB HOME">DNB Home</option>
+                <option value="DNB AWAY">DNB Away</option>
+              </optgroup>
+              <optgroup label="Goals Over/Under">
+                <option value="OVER 0.5">Over 0.5</option>
+                <option value="OVER 1.5">Over 1.5</option>
+                <option value="OVER 2.5">Over 2.5</option>
+                <option value="OVER 3.5">Over 3.5</option>
+                <option value="OVER 4.5">Over 4.5</option>
+                <option value="UNDER 1.5">Under 1.5</option>
+                <option value="UNDER 2.5">Under 2.5</option>
+                <option value="UNDER 3.5">Under 3.5</option>
+                <option value="UNDER 4.5">Under 4.5</option>
+              </optgroup>
+              <optgroup label="BTTS (Both Teams to Score)">
+                <option value="BTTS YES">BTTS — Yes</option>
+                <option value="BTTS NO">BTTS — No</option>
+              </optgroup>
+              <optgroup label="Odd / Even">
+                <option value="ODD">Total Goals — Odd</option>
+                <option value="EVEN">Total Goals — Even</option>
+              </optgroup>
+              <optgroup label="Clean Sheet / Win to Nil">
+                <option value="HOME CLEAN SHEET">Home Clean Sheet</option>
+                <option value="AWAY CLEAN SHEET">Away Clean Sheet</option>
+                <option value="HOME WIN TO NIL">Home Win to Nil</option>
+                <option value="AWAY WIN TO NIL">Away Win to Nil</option>
+              </optgroup>
+              <optgroup label="First Half (HT)">
+                <option value="HT 1">HT — Home</option>
+                <option value="HT X">HT — Draw</option>
+                <option value="HT 2">HT — Away</option>
+                <option value="HT OVER 0.5">HT Over 0.5</option>
+                <option value="HT OVER 1.5">HT Over 1.5</option>
+                <option value="HT UNDER 1.5">HT Under 1.5</option>
+              </optgroup>
+              <optgroup label="HT/FT (Half-Time / Full-Time)">
+                <option value="1/1">1/1</option>
+                <option value="1/X">1/X</option>
+                <option value="1/2">1/2</option>
+                <option value="X/1">X/1</option>
+                <option value="X/X">X/X</option>
+                <option value="X/2">X/2</option>
+                <option value="2/1">2/1</option>
+                <option value="2/X">2/X</option>
+                <option value="2/2">2/2</option>
+              </optgroup>
+              <optgroup label="Corners (chagua 'Corners' kwenye Tip Type)">
+                <option value="OVER 7.5">Corners Over 7.5</option>
+                <option value="OVER 8.5">Corners Over 8.5</option>
+                <option value="OVER 9.5">Corners Over 9.5</option>
+                <option value="OVER 10.5">Corners Over 10.5</option>
+                <option value="UNDER 9.5">Corners Under 9.5</option>
+                <option value="UNDER 10.5">Corners Under 10.5</option>
+                <option value="UNDER 11.5">Corners Under 11.5</option>
+              </optgroup>
+              <option value="custom">✏️ Nyingine (Andika Mwenyewe)</option>
+            </select>
+            <input type="text" id="tip" placeholder="Tip itaonekana hapa, au andika yako…" style="margin-top:8px;">
+          </div>
           <div class="field"><label>Odd</label><input type="text" id="odd" placeholder="1.85"></div>
         </div>
         <div class="form-row">
@@ -679,6 +754,40 @@
       </div>
     </div>
 
+    <!-- VIP USERS -->
+    <div id="vipUsersSection" class="section hidden">
+      <div class="stats-grid" style="padding:0 0 20px;">
+        <div class="stat-card gold">
+          <div class="stat-value" id="activeVipCount">—</div>
+          <div class="stat-label">Active VIP</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-value" id="expiredVipCount">—</div>
+          <div class="stat-label">Expired</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-value" id="totalVipCodesUsed">—</div>
+          <div class="stat-label">Total Codes Used</div>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="vipUserSearchInput" placeholder="Search by name, email, or code…" oninput="renderVipUsersList()">
+      </div>
+      <div class="filter-tabs">
+        <div class="filter-tab active-all" data-filter="all" onclick="setVipUserFilter('all', this)">👥 All</div>
+        <div class="filter-tab" data-filter="active" onclick="setVipUserFilter('active', this)">💎 Active</div>
+        <div class="filter-tab" data-filter="expired" onclick="setVipUserFilter('expired', this)">⏰ Expired</div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title"><span>👑</span> VIP Users</div>
+        <button class="btn btn-ghost btn-sm" onclick="loadVipUsers()">🔄 Refresh</button>
+      </div>
+      <div id="vipUsersList"></div>
+    </div>
+
   </div><!-- /mainApp -->
 
   <!-- CONFIRM MODAL -->
@@ -747,6 +856,31 @@ let visitorFilter       = "all";
 let visitorView         = "cards";
 let visitorSortKey      = "lastSeen";
 let visitorSortDir      = "desc";
+
+// ── Tip preset dropdown ──────────────────────────────────────
+// Keeps the free-text #tip input, but lets the admin pick a common
+// tip from a dropdown instead of typing it every time. Picking an
+// option fills the text field (which stays editable); picking
+// "custom" just clears it and focuses it for manual typing.
+window.handleTipPresetChange = function() {
+  const sel = document.getElementById("tipPreset");
+  const tipInput = document.getElementById("tip");
+  if (!sel.value) return;
+  if (sel.value === "custom") {
+    tipInput.value = "";
+    tipInput.focus();
+  } else {
+    tipInput.value = sel.value;
+  }
+};
+
+function syncTipPresetFromValue(tipVal) {
+  const sel = document.getElementById("tipPreset");
+  if (!tipVal) { sel.value = ""; return; }
+  const upper = tipVal.toUpperCase().trim();
+  const match = Array.from(sel.options).find(o => o.value && o.value !== "custom" && o.value.toUpperCase() === upper);
+  sel.value = match ? match.value : (upper ? "custom" : "");
+}
 
 // ── SERVER TIME SYNC ──────────────────────────────────────────
 let serverOffsetMs = 0;
@@ -943,13 +1077,14 @@ window.executeConfirm = async function() {
 
 // ── Tab Navigation ────────────────────────────────────────────
 window.showTab = function(tab) {
-  ["today","history","codes","visitors"].forEach(t => {
+  ["today","history","codes","visitors","vipUsers"].forEach(t => {
     document.getElementById(t + "Section").classList.add("hidden");
     document.getElementById("btn" + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove("active");
   });
   document.getElementById(tab + "Section").classList.remove("hidden");
   document.getElementById("btn" + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("active");
   if (tab === "visitors") loadVisitors();
+  if (tab === "vipUsers") loadVipUsers();
 };
 
 // ── Auth ──────────────────────────────────────────────────────
@@ -989,6 +1124,9 @@ function startAutoRefresh() {
     await Promise.all([loadToday(), loadHistory(), loadStats()]);
     if (!document.getElementById("visitorsSection").classList.contains("hidden")) {
       await loadVisitors();
+    }
+    if (!document.getElementById("vipUsersSection").classList.contains("hidden")) {
+      await loadVipUsers();
     }
     if (nowDay !== lastKnownDay) {
       lastKnownDay = nowDay;
@@ -1098,6 +1236,7 @@ function clearInputs() {
   ["date","time","league","match","tip","odd","ft","corners"].forEach(id => {
     document.getElementById(id).value = "";
   });
+  document.getElementById("tipPreset").value = "";
   document.getElementById("type").value    = "vip";
   document.getElementById("tipType").value = "goals";
   document.getElementById("saveBtn").innerHTML = "Save Match";
@@ -1244,6 +1383,7 @@ window.editMatch = async function(id, col) {
   document.getElementById("league").value  = d.league || "";
   document.getElementById("match").value   = d.match || "";
   document.getElementById("tip").value     = d.tip || "";
+  syncTipPresetFromValue(d.tip || "");
   document.getElementById("odd").value     = d.odd || "";
   document.getElementById("ft").value      = d.ft || "";
   document.getElementById("type").value    = d.type || "vip";
@@ -1840,6 +1980,133 @@ window.deleteVisitor = function(visitorId) {
   });
 };
 
+// ── VIP Users ─────────────────────────────────────────────────
+// Inaunganisha "vip_codes" (code + expiry + active + redeemedBy)
+// na "analytics_visitors" (jina/email/blocked) kwa kutumia
+// redeemedBy == visitorId, ili kupata orodha kamili ya watu
+// walio na VIP — wakiwa active au wameisha muda.
+let allVipUsers   = [];
+let vipUserFilter = "all";
+
+window.loadVipUsers = async function() {
+  const list = document.getElementById("vipUsersList");
+  list.innerHTML = '<div class="loading-row"><span class="loader"></span> Loading…</div>';
+  try {
+    const codesSnap = await getDocs(collection(db, "vip_codes"));
+    const redeemed = [];
+    codesSnap.forEach(d => {
+      const c = d.data();
+      if (c.redeemedBy) redeemed.push({ id: d.id, ...c });
+    });
+
+    const visitorDocs = await Promise.all(
+      redeemed.map(c => getDoc(doc(db, "analytics_visitors", c.redeemedBy)).catch(() => null))
+    );
+
+    const n = now();
+    allVipUsers = redeemed.map((c, i) => {
+      const vSnap = visitorDocs[i];
+      const v = vSnap && vSnap.exists() ? vSnap.data() : null;
+      const exp = c.expiry ? new Date(c.expiry + "T23:59:59") : null;
+      const isActive = !!(c.active && exp && n <= exp);
+      return {
+        visitorId: c.redeemedBy,
+        name: v?.name || null,
+        email: v?.email || null,
+        blocked: !!(v?.blocked),
+        code: c.code,
+        codeId: c.id,
+        expiry: c.expiry,
+        active: c.active,
+        redeemedAt: c.redeemedAt,
+        isActive
+      };
+    });
+
+    renderVipUsersList();
+  } catch (e) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>${e.message}</div>`;
+  }
+};
+
+window.setVipUserFilter = function(filter, el) {
+  vipUserFilter = filter;
+  document.querySelectorAll("#vipUsersSection .filter-tab").forEach(t => t.classList.remove("active-all","active-vip","active-disabled"));
+  const cls = filter === "expired" ? "active-disabled" : filter === "active" ? "active-vip" : "active-all";
+  el.classList.add(cls);
+  renderVipUsersList();
+};
+
+function getFilteredVipUsers() {
+  const searchTerm = (document.getElementById("vipUserSearchInput")?.value || "").trim().toLowerCase();
+  return allVipUsers.filter(u => {
+    if (vipUserFilter === "active"  && !u.isActive) return false;
+    if (vipUserFilter === "expired" &&  u.isActive) return false;
+    if (searchTerm) {
+      const hay = `${u.name || ""} ${u.email || ""} ${u.code || ""} ${u.visitorId || ""}`.toLowerCase();
+      if (!hay.includes(searchTerm)) return false;
+    }
+    return true;
+  });
+}
+
+window.renderVipUsersList = function() {
+  const activeCount  = allVipUsers.filter(u => u.isActive).length;
+  const expiredCount = allVipUsers.length - activeCount;
+  document.getElementById("activeVipCount").innerText     = activeCount;
+  document.getElementById("expiredVipCount").innerText    = expiredCount;
+  document.getElementById("totalVipCodesUsed").innerText  = allVipUsers.length;
+
+  const list = document.getElementById("vipUsersList");
+
+  if (!allVipUsers.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">👑</div>No VIP users yet</div>';
+    return;
+  }
+
+  const visible = getFilteredVipUsers().sort((a, b) => {
+    if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
+    return (b.expiry || "").localeCompare(a.expiry || "");
+  });
+
+  if (!visible.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>No users match this filter</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+  visible.forEach(u => {
+    const div = document.createElement("div");
+    div.className = "user-card" + (u.blocked ? " disabled-card" : "");
+    const avatarCls  = u.blocked ? "disabled-avatar" : u.isActive ? "vip-avatar" : "";
+    const avatarIcon = u.blocked ? "🚫" : u.isActive ? "👑" : "⏰";
+    div.innerHTML = `
+      <div class="user-card-top">
+        <div class="user-avatar ${avatarCls}">${avatarIcon}</div>
+        <div class="user-info">
+          <div class="user-email">${escapeHtml(u.name || "Unknown user")}</div>
+          <div class="user-uid">${u.email ? escapeHtml(u.email) + ' · ' : ''}ID: ${escapeHtml(u.visitorId)}</div>
+          <div class="user-badges">
+            ${u.isActive ? '<span class="user-badge badge-active-vip">👑 VIP Active</span>' : '<span class="user-badge badge-disabled">⏰ Expired</span>'}
+            ${!u.active ? '<span class="user-badge badge-disabled">⏸ Code Paused</span>' : ''}
+            ${u.blocked ? '<span class="user-badge badge-disabled">🚫 Blocked</span>' : ''}
+            <span class="user-badge badge-code">🔑 ${escapeHtml(u.code)}</span>
+          </div>
+          <div class="user-expiry">📅 Expires: ${u.expiry || 'N/A'}</div>
+          <div class="user-expiry">🕒 Redeemed: ${u.redeemedAt ? new Date(u.redeemedAt).toLocaleString() : 'N/A'}</div>
+          <div class="user-actions">
+            <button class="btn btn-copy btn-sm" onclick="copyCode('${u.code}')">📋 Copy Code</button>
+            <button class="btn btn-warning btn-sm" onclick="releaseVipCode('${u.codeId}')">🔓 Release</button>
+            ${u.blocked
+              ? `<button class="btn btn-success btn-sm" onclick="unblockVisitor('${u.visitorId}')">✅ Unblock</button>`
+              : `<button class="btn btn-danger btn-sm" onclick="blockVisitor('${u.visitorId}')">🚫 Block</button>`}
+          </div>
+        </div>
+      </div>`;
+    list.appendChild(div);
+  });
+};
+
 // ── Stats ─────────────────────────────────────────────────────
 async function loadStats() {
   const [freeSnap, vipSnap] = await Promise.all([
@@ -1874,5 +2141,3 @@ window.confirmLogout        = async () => { await signOut(auth); document.getEle
 </script>
 </body>
 </html>
-
-
